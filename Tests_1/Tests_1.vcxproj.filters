@@ -1,0 +1,462 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Crypt">
+      <UniqueIdentifier>{f61c130a-4a7c-476b-b710-a32a356d6e8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Enums">
+      <UniqueIdentifier>{a3832184-aa5f-4cb2-bb0c-065db1ab0972}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{e24a4e1a-110e-4fa9-8192-0faa8a8e98a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\DB">
+      <UniqueIdentifier>{a775f926-b890-4980-9565-ab99ded5fcb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Net">
+      <UniqueIdentifier>{d20a786a-ef92-4d95-9452-453ec269ce03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Opcodes">
+      <UniqueIdentifier>{0bbc966b-f406-406a-8775-e5f273b12de8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Data">
+      <UniqueIdentifier>{137d66e4-9099-445d-af2e-5016c7b6b8b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Data\Templates">
+      <UniqueIdentifier>{6537e395-a16a-4209-a619-acb362255974}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="world_server">
+      <UniqueIdentifier>{22bdfe86-70bf-4fc7-8853-2858ff3e318b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="arbiter_server">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Framework\DataStructs_creature">
+      <UniqueIdentifier>{8156f651-30ba-4541-8256-da4dfa24ea1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\DataStructs_npc">
+      <UniqueIdentifier>{50b37ab9-a6ef-4ec2-a89a-9781f4f072b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\DataStructs_player">
+      <UniqueIdentifier>{8828a307-af1f-420d-824f-896ef3eecf28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\DataStructs_world">
+      <UniqueIdentifier>{a8def676-1b35-44e0-9e95-8fdb248ad5d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="chat_server">
+      <UniqueIdentifier>{90b491c3-4650-4120-ab32-a45245ada9f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\entity_manager">
+      <UniqueIdentifier>{8757c684-cfbb-4bd8-b38f-1c913a1a1813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Inventory">
+      <UniqueIdentifier>{6342f68e-b9fb-4f94-95ae-f4c22bab07c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\MySQL">
+      <UniqueIdentifier>{db61aeea-0b90-4230-b9f2-4a280fb492ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Time">
+      <UniqueIdentifier>{5f37a4f1-9d33-4b0b-aa8b-6c7c744337e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="active_server">
+      <UniqueIdentifier>{5593a77d-f216-4411-845e-9ea9f92faaa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\stats">
+      <UniqueIdentifier>{e1e9e019-0890-4270-acb6-7a8c8a12da9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\contract">
+      <UniqueIdentifier>{0181a771-d7c0-41ef-a683-33100a4fb9aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\contract\contracts">
+      <UniqueIdentifier>{470ed12e-0175-45e4-807f-a9978671acba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\p_processor">
+      <UniqueIdentifier>{b2c8b0ba-2f8e-4d55-bbaf-04c304667a47}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="OpCodes.cpp">
+      <Filter>Opcodes</Filter>
+    </ClCompile>
+    <ClCompile Include="connexion.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="logService.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="mathUtils.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Sha.cpp">
+      <Filter>Crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Session.cpp">
+      <Filter>Crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="CryptorKey.cpp">
+      <Filter>Crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Cryptor.cpp">
+      <Filter>Crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="Crypt.cpp">
+      <Filter>Crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="job.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="MySqlDriver.cpp">
+      <Filter>Framework\MySQL</Filter>
+    </ClCompile>
+    <ClCompile Include="stringUtils.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>Framework\DataStructs_player</Filter>
+    </ClCompile>
+    <ClCompile Include="account.cpp">
+      <Filter>Framework\DataStructs_player</Filter>
+    </ClCompile>
+    <ClCompile Include="dbHandler.cpp">
+      <Filter>Framework\DB</Filter>
+    </ClCompile>
+    <ClCompile Include="creature.cpp">
+      <Filter>Framework\DataStructs_creature</Filter>
+    </ClCompile>
+    <ClCompile Include="worldposition.cpp">
+      <Filter>Framework\DataStructs_creature</Filter>
+    </ClCompile>
+    <ClCompile Include="npc.cpp">
+      <Filter>Framework\DataStructs_npc</Filter>
+    </ClCompile>
+    <ClCompile Include="servertime.cpp">
+      <Filter>Framework\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Stream.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="XMLDocumentParser.cpp">
+      <Filter>Framework\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="dataservice.cpp">
+      <Filter>Framework\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="inventory.cpp">
+      <Filter>Framework\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="arbiter_server.cpp">
+      <Filter>arbiter_server</Filter>
+    </ClCompile>
+    <ClCompile Include="world_server.cpp">
+      <Filter>world_server</Filter>
+    </ClCompile>
+    <ClCompile Include="internalOp.cpp">
+      <Filter>Opcodes</Filter>
+    </ClCompile>
+    <ClCompile Include="continent.cpp">
+      <Filter>Framework\DataStructs_world</Filter>
+    </ClCompile>
+    <ClCompile Include="config.cpp" />
+    <ClCompile Include="Bounds.cpp">
+      <Filter>Framework\DataStructs_world</Filter>
+    </ClCompile>
+    <ClCompile Include="colideable.cpp">
+      <Filter>Framework\DataStructs_creature</Filter>
+    </ClCompile>
+    <ClCompile Include="player_rcu.cpp">
+      <Filter>Framework\DataStructs_world</Filter>
+    </ClCompile>
+    <ClCompile Include="p_spawn.cpp">
+      <Filter>Framework\DataStructs_player</Filter>
+    </ClCompile>
+    <ClCompile Include="area.cpp">
+      <Filter>Framework\DataStructs_world</Filter>
+    </ClCompile>
+    <ClCompile Include="zone.cpp">
+      <Filter>Framework\DataStructs_world</Filter>
+    </ClCompile>
+    <ClCompile Include="chat.cpp">
+      <Filter>chat_server</Filter>
+    </ClCompile>
+    <ClCompile Include="chat_data.cpp">
+      <Filter>chat_server</Filter>
+    </ClCompile>
+    <ClCompile Include="entity_manager.cpp">
+      <Filter>Framework\entity_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="entity.cpp">
+      <Filter>Framework\entity_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="active_server.cpp">
+      <Filter>active_server</Filter>
+    </ClCompile>
+    <ClCompile Include="skylake_stats.cpp">
+      <Filter>Framework\stats</Filter>
+    </ClCompile>
+    <ClCompile Include="contract.cpp">
+      <Filter>Framework\contract</Filter>
+    </ClCompile>
+    <ClCompile Include="contract_factory.cpp">
+      <Filter>Framework\contract</Filter>
+    </ClCompile>
+    <ClCompile Include="contract_manager.cpp">
+      <Filter>Framework\contract</Filter>
+    </ClCompile>
+    <ClCompile Include="bind_contract.cpp">
+      <Filter>Framework\contract\contracts</Filter>
+    </ClCompile>
+    <ClCompile Include="p_processor.cpp">
+      <Filter>Framework\p_processor</Filter>
+    </ClCompile>
+    <ClCompile Include="enchant_contract.cpp">
+      <Filter>Framework\contract\contracts</Filter>
+    </ClCompile>
+    <ClCompile Include="enigmatic_contract.cpp">
+      <Filter>Framework\contract\contracts</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mathUtils.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="typeDefs.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="connexion.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="logService.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="OpCodes.h">
+      <Filter>Opcodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypt.hpp">
+      <Filter>Crypt</Filter>
+    </ClInclude>
+    <ClInclude Include="connexionEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="opcodeEnum.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="serverEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="jobEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="job.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="MySqlDriver.h">
+      <Filter>Framework\MySQL</Filter>
+    </ClInclude>
+    <ClInclude Include="stringUtils.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="account.h">
+      <Filter>Framework\DataStructs_player</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>Framework\DataStructs_player</Filter>
+    </ClInclude>
+    <ClInclude Include="DBHandler.h">
+      <Filter>Framework\DB</Filter>
+    </ClInclude>
+    <ClInclude Include="playerEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="creature.h">
+      <Filter>Framework\DataStructs_creature</Filter>
+    </ClInclude>
+    <ClInclude Include="creatureEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="worldposition.h">
+      <Filter>Framework\DataStructs_creature</Filter>
+    </ClInclude>
+    <ClInclude Include="npc.h">
+      <Filter>Framework\DataStructs_npc</Filter>
+    </ClInclude>
+    <ClInclude Include="servertime.h">
+      <Filter>Framework\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Stream.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="skilltemplate.h">
+      <Filter>Framework\Data\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="passivitytemplate.h">
+      <Filter>Framework\Data\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="abnormalitytemplate.h">
+      <Filter>Framework\Data\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="itemtemplate.h">
+      <Filter>Framework\Data\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="npctemplate.h">
+      <Filter>Framework\Data\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="equipmentsettemplate.h">
+      <Filter>Framework\Data\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="customizingitemtemplate.h">
+      <Filter>Framework\Data\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="enchantdatatemplate.h">
+      <Filter>Framework\Data\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="equipmentdatatemplate.h">
+      <Filter>Framework\Data\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="passivitycategorytemplate.h">
+      <Filter>Framework\Data\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLDocumentParser.h">
+      <Filter>Framework\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="dataservice.h">
+      <Filter>Framework\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="equipmentEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="itemEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="inventory.h">
+      <Filter>Framework\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="arbiter_server.h">
+      <Filter>arbiter_server</Filter>
+    </ClInclude>
+    <ClInclude Include="world_server.h">
+      <Filter>world_server</Filter>
+    </ClInclude>
+    <ClInclude Include="internalOp.h">
+      <Filter>Opcodes</Filter>
+    </ClInclude>
+    <ClInclude Include="worldEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="continent.h">
+      <Filter>Framework\DataStructs_world</Filter>
+    </ClInclude>
+    <ClInclude Include="pms.h">
+      <Filter>Framework\DataStructs_world</Filter>
+    </ClInclude>
+    <ClInclude Include="zonetemplate.h">
+      <Filter>Framework\Data\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h" />
+    <ClInclude Include="chatEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Bounds.h">
+      <Filter>Framework\DataStructs_world</Filter>
+    </ClInclude>
+    <ClInclude Include="colideable.h">
+      <Filter>Framework\DataStructs_creature</Filter>
+    </ClInclude>
+    <ClInclude Include="player_rcu.h">
+      <Filter>Framework\DataStructs_world</Filter>
+    </ClInclude>
+    <ClInclude Include="p_spawn.h">
+      <Filter>Framework\DataStructs_player</Filter>
+    </ClInclude>
+    <ClInclude Include="area.h">
+      <Filter>Framework\DataStructs_world</Filter>
+    </ClInclude>
+    <ClInclude Include="zone.h">
+      <Filter>Framework\DataStructs_world</Filter>
+    </ClInclude>
+    <ClInclude Include="chat.h">
+      <Filter>chat_server</Filter>
+    </ClInclude>
+    <ClInclude Include="chat_data.h">
+      <Filter>chat_server</Filter>
+    </ClInclude>
+    <ClInclude Include="entity_manager.h">
+      <Filter>Framework\entity_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="entity.h">
+      <Filter>Framework\entity_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="active_server.h">
+      <Filter>active_server</Filter>
+    </ClInclude>
+    <ClInclude Include="effect.h">
+      <Filter>Framework\DataStructs_player</Filter>
+    </ClInclude>
+    <ClInclude Include="skylake_stats.h">
+      <Filter>Framework\stats</Filter>
+    </ClInclude>
+    <ClInclude Include="contract_manager.h">
+      <Filter>Framework\contract</Filter>
+    </ClInclude>
+    <ClInclude Include="contract.h">
+      <Filter>Framework\contract</Filter>
+    </ClInclude>
+    <ClInclude Include="ContractEnum.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="contract_factory.h">
+      <Filter>Framework\contract</Filter>
+    </ClInclude>
+    <ClInclude Include="bind_contract.h">
+      <Filter>Framework\contract\contracts</Filter>
+    </ClInclude>
+    <ClInclude Include="passivityEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="p_processor.h">
+      <Filter>Framework\p_processor</Filter>
+    </ClInclude>
+    <ClInclude Include="win32.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="enchant_contract.h">
+      <Filter>Framework\contract\contracts</Filter>
+    </ClInclude>
+    <ClInclude Include="enigmatic_contract.h">
+      <Filter>Framework\contract\contracts</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Tests_1.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Data\icon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Data\icon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,2397 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<World name="Sky-Lake-World" continentCount="1">
+  <Continent id="1" identity="5" areaCount="1" name="STEPSTONE_ISLE">
+    <Area name="STEPSTONE_ISLE" channels="1">
+      <Bounds  rectangle="15357.14,0;30714.28,15357.14" />
+      <Zone name="STEPSTONE_ISLE">
+        <Bounds  rectangle="15377.86,0;30755.71,15377.86" />
+
+        <Section rectangle="15377.86,0;8787.346,4393.673" />
+        <Section rectangle="15377.86,4393.673;15377.86,4393.673" />
+        <Section rectangle="15377.86,8787.346;10984.18,6590.51" />
+        <Section rectangle="26362.04,8787.346;15377.86,6590.51" />
+        <Section rectangle="30755.71,2196.836;13181.02,6590.509" />
+      </Zone>
+    </Area>
+  </Continent>
+  <TODO>
+    <Continent id="2" identity="1;7001;7002;7003;7004" name="SHOUTH_ARUN"  >
+      <Area name="VELIKA" channels="2">
+        <Bounds>
+          <Fence pos="15050,-30650" />
+          <Fence pos="15350,30800" />
+          <Fence pos="-15400,30800" />
+          <Fence pos="-15450,-30650" />
+        </Bounds>
+
+        <Area_1 name="VELIKA_1">
+          <Bounds>
+            <Fence pos="15350,-6850" />
+            <Fence pos="15050,-30700" />
+            <Fence pos="-15400,-30700" />
+            <Fence pos="-15400,-6750" />
+          </Bounds>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-15362.5,-30712.5" />
+              <Fence pos="-15375,-25100" />
+              <Fence pos="-7287.5,-25087.5" />
+              <Fence pos="-7312.5,-30712.5" />
+            </Bounds>
+
+            <Section>
+              <Fence pos="-15362.5,-30712.5" />
+              <Fence pos="-11550,-30725" />
+              <Fence pos="-11550,-28325" />
+              <Fence pos="-15375,-28350" />
+            </Section>
+            <Section>
+              <Fence pos="-7300,-30712.5" />
+              <Fence pos="-7300,-28312.5" />
+              <Fence pos="-11562.5,-28312.5" />
+              <Fence pos="-11587.5,-30725" />
+            </Section>
+            <Section>
+              <Fence pos="-15375,-28337.5" />
+              <Fence pos="-15375,-25100" />
+              <Fence pos="-11562.5,-25087.5" />
+              <Fence pos="-11575,-28312.5" />
+            </Section>
+            <Section>
+              <Fence pos="-11587.5,-28325" />
+              <Fence pos="-11562.5,-25100" />
+              <Fence pos="-7312.5,-25112.5" />
+              <Fence pos="-7300,-28325" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-7350,-30700" />
+              <Fence pos="-7300,-25062.5" />
+              <Fence pos="-25,-25075" />
+              <Fence pos="-37.5,-30700" />
+            </Bounds>
+            <Section>
+              <Fence pos="-3550,-30725" />
+              <Fence pos="-3562.5,-27950" />
+              <Fence pos="-7312.5,-27825" />
+              <Fence pos="-7312.5,-30712.5" />
+            </Section>
+            <Section>
+              <Fence pos="-3575,-27950" />
+              <Fence pos="0,-27837.5" />
+              <Fence pos="-25,-30687.5" />
+              <Fence pos="-3587.5,-30737.5" />
+            </Section>
+            <Section>
+              <Fence pos="-12.5,-27837.5" />
+              <Fence pos="-3600,-27962.5" />
+              <Fence pos="-3575,-25087.5" />
+              <Fence pos="-25,-25087.5" />
+            </Section>
+            <Section>
+              <Fence pos="-3625,-27975" />
+              <Fence pos="-7325,-27800" />
+              <Fence pos="-7275,-25087.5" />
+              <Fence pos="-3575,-25087.5" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False" >
+            <Bounds>
+              <Fence pos="-15375,-25075" />
+              <Fence pos="-7337.5,-25062.5" />
+              <Fence pos="-7300,-20175" />
+              <Fence pos="-15400,-20175" />
+            </Bounds>
+            <Section>
+              <Fence pos="-15400,-25075" />
+              <Fence pos="-11550,-25050" />
+              <Fence pos="-11550,-22562.5" />
+              <Fence pos="-15400,-22562.5" />
+            </Section>
+            <Section>
+              <Fence pos="-7312.5,-25075" />
+              <Fence pos="-7300,-22562.5" />
+              <Fence pos="-11562.5,-22550" />
+              <Fence pos="-11562.5,-25062.5" />
+            </Section>
+            <Section>
+              <Fence pos="-7312.5,-22550" />
+              <Fence pos="-7300,-20175" />
+              <Fence pos="-11550,-20162.5" />
+              <Fence pos="-11575,-22550" />
+            </Section>
+            <Section>
+              <Fence pos="-11575,-22550" />
+              <Fence pos="-15400,-22550" />
+              <Fence pos="-15400,-20175" />
+              <Fence pos="-11562.5,-20175" />
+            </Section>
+
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-7312.5,-25062.5"/>
+              <Fence pos="-12.5,-25062.5"/>
+              <Fence pos="-25,-20187.5"/>
+              <Fence pos="-7325,-20175"/>
+            </Bounds>
+            <Section>
+              <Fence pos="-7337.5,-25062.5"/>
+              <Fence pos="-3575,-25062.5"/>
+              <Fence pos="-3525,-22587.5"/>
+              <Fence pos="-7350,-22550"/>
+            </Section>
+            <Section>
+              <Fence pos="-25,-25075"/>
+              <Fence pos="-37.5,-22600"/>
+              <Fence pos="-3550,-22587.5"/>
+              <Fence pos="-3575,-25037.5"/>
+            </Section>
+            <Section>
+              <Fence pos="-37.5,-22600"/>
+              <Fence pos="-25,-20187.5"/>
+              <Fence pos="-3587.5,-20150"/>
+              <Fence pos="-3562.5,-22550"/>
+            </Section>
+            <Section>
+              <Fence pos="-3562.5,-22575"/>
+              <Fence pos="-3575,-20162.5"/>
+              <Fence pos="-7337.5,-20187.5"/>
+              <Fence pos="-7350,-22562.5"/>
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-7362.5,-20175" />
+              <Fence pos="-7262.5,-13637.5" />
+              <Fence pos="-15375,-13637.5" />
+              <Fence pos="-15387.5,-20187.5" />
+            </Bounds>
+            <Section>
+              <Fence pos="-11575,-20200" />
+              <Fence pos="-11575,-17300" />
+              <Fence pos="-15400,-17325" />
+              <Fence pos="-15437.5,-20162.5" />
+            </Section>
+            <Section>
+              <Fence pos="-7350,-20162.5" />
+              <Fence pos="-7312.5,-17287.5" />
+              <Fence pos="-11575,-17325" />
+              <Fence pos="-11575,-20162.5" />
+            </Section>
+            <Section>
+              <Fence pos="-7325,-17287.5" />
+              <Fence pos="-7287.5,-13637.5" />
+              <Fence pos="-11537.5,-13625" />
+              <Fence pos="-11587.5,-17287.5" />
+            </Section>
+            <Section>
+              <Fence pos="-11600,-17300" />
+              <Fence pos="-11562.5,-13650" />
+              <Fence pos="-15375,-13637.5" />
+              <Fence pos="-15400,-17337.5" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-25,-20187.5" />
+              <Fence pos="-7362.5,-20162.5" />
+              <Fence pos="-7275,-13650" />
+              <Fence pos="-25,-13600" />
+            </Bounds>
+            <Section>
+              <Fence pos="-25,-20162.5" />
+              <Fence pos="-3562.5,-20175" />
+              <Fence pos="-3550,-16800" />
+              <Fence pos="-12.5,-16800" />
+            </Section>
+            <Section>
+              <Fence pos="-3562.5,-20175" />
+              <Fence pos="-3537.5,-16787.5" />
+              <Fence pos="-7337.5,-16812.5" />
+              <Fence pos="-7375,-20162.5" />
+            </Section>
+            <Section>
+              <Fence pos="-25,-16825" />
+              <Fence pos="-25,-13587.5" />
+              <Fence pos="-3575,-13625" />
+              <Fence pos="-3537.5,-16787.5" />
+            </Section>
+            <Section>
+              <Fence pos="-3562.5,-16787.5" />
+              <Fence pos="-3562.5,-13625" />
+              <Fence pos="-7250,-13675" />
+              <Fence pos="-7362.5,-16812.5" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-15344.44,-13644.44" />
+              <Fence pos="-15411.11,-6766.667" />
+              <Fence pos="-22.22222,-6800" />
+              <Fence pos="-33.33333,-13555.55" />
+            </Bounds>
+            <Section>
+              <Fence pos="-5362.5,-13650" />
+              <Fence pos="-5337.5,-10487.5" />
+              <Fence pos="-10650,-10487.5" />
+              <Fence pos="-10675,-13650" />
+            </Section>
+            <Section>
+              <Fence pos="-10637.5,-13637.5" />
+              <Fence pos="-15337.5,-13650" />
+              <Fence pos="-15387.5,-10487.5" />
+              <Fence pos="-10625,-10475" />
+            </Section>
+            <Section>
+              <Fence pos="-5362.5,-10500" />
+              <Fence pos="-5362.5,-6800" />
+              <Fence pos="-10637.5,-6775" />
+              <Fence pos="-10612.5,-10500" />
+            </Section>
+            <Section>
+              <Fence pos="-10637.5,-10500" />
+              <Fence pos="-10662.5,-6787.5" />
+              <Fence pos="-15400,-6787.5" />
+              <Fence pos="-15375,-10500" />
+            </Section>
+            <Section>
+              <Fence pos="-5362.5,-10500" />
+              <Fence pos="0,-10512.5" />
+              <Fence pos="-62.5,-13562.5" />
+              <Fence pos="-5375,-13637.5" />
+            </Section>
+            <Section>
+              <Fence pos="-25,-10512.5" />
+              <Fence pos="-50,-6800" />
+              <Fence pos="-5375,-6800" />
+              <Fence pos="-5400,-10487.5" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-37.5,-6812.5" />
+              <Fence pos="15375,-6812.5" />
+              <Fence pos="15350,-15362.5" />
+              <Fence pos="12.5,-15350" />
+            </Bounds>
+            <Section>
+              <Fence pos="15325,-15362.5" />
+              <Fence pos="15362.5,-6812.5" />
+              <Fence pos="7075,-6812.5" />
+              <Fence pos="7062.5,-15362.5" />
+            </Section>
+            <Section>
+              <Fence pos="7025,-15362.5" />
+              <Fence pos="7062.5,-6800" />
+              <Fence pos="-12.5,-6800" />
+              <Fence pos="12.5,-15350" />
+            </Section>
+          </Area_2>
+        </Area_1>
+
+        <Area_1 name="VELIKA_2">
+          <Bounds>
+            <Fence pos="-15350,-6700" />
+            <Fence pos="-15400,50" />
+            <Fence pos="15300,50" />
+            <Fence pos="15250,-6800" />
+          </Bounds>
+          <Area_2 isSameAsParent="True">
+            <Bounds>
+              <Fence pos="-15350,-6700" />
+              <Fence pos="-15400,50" />
+              <Fence pos="15300,50" />
+              <Fence pos="15250,-6800" />
+            </Bounds>
+            <Section>
+              <Fence pos="0,-6700" />
+              <Fence pos="-50,50" />
+              <Fence pos="-15350,100" />
+              <Fence pos="-15400,-6750" />
+            </Section>
+            <Section>
+              <Fence pos="-50,-6650" />
+              <Fence pos="15250,-6700" />
+              <Fence pos="15350,150" />
+              <Fence pos="-50,0" />
+            </Section>
+          </Area_2>
+        </Area_1>
+
+        <Area_1 name="VELIKA_3_CITY">
+          <Bounds>
+            <Fence pos="15250,100" />
+            <Fence pos="-15400,100" />
+            <Fence pos="-15400,15750" />
+            <Fence pos="15250,15550" />
+          </Bounds>
+          <Area_2 isSameAsParent="True">
+            <Bounds>
+              <Fence pos="15250,100" />
+              <Fence pos="-15400,100" />
+              <Fence pos="-15400,15750" />
+              <Fence pos="15250,15550" />
+            </Bounds>
+            <Section>
+              <Fence pos="-2050,9200" />
+              <Fence pos="-4850,8200" />
+              <Fence pos="-6783.333,5750" />
+              <Fence pos="-4850,4900" />
+              <Fence pos="-2916.667,5733.333" />
+              <Fence pos="-1883.333,5816.667" />
+              <Fence pos="-1516.667,5333.333" />
+              <Fence pos="133.3333,6400" />
+              <Fence pos="-1133.333,7966.667" />
+            </Section>
+            <Section>
+              <Fence pos="100,6400" />
+              <Fence pos="3850,8983.334" />
+              <Fence pos="1900,11433.33" />
+              <Fence pos="-1550,14283.33" />
+              <Fence pos="-3066.667,12966.67" />
+              <Fence pos="-2883.333,10383.33" />
+              <Fence pos="-2066.667,9200" />
+            </Section>
+            <Section>
+              <Fence pos="-6800,5750" />
+              <Fence pos="-6800,1616.667" />
+              <Fence pos="-983.3334,1650" />
+              <Fence pos="-983.3334,5650" />
+              <Fence pos="-1516.667,5300" />
+              <Fence pos="-1900,5816.667" />
+              <Fence pos="-2900,5733.333" />
+              <Fence pos="-4883.333,4900" />
+            </Section>
+            <Section>
+              <Fence pos="3816.667,8966.667" />
+              <Fence pos="-983.3334,5666.667" />
+              <Fence pos="-983.3334,1650" />
+              <Fence pos="3833.333,1650" />
+            </Section>
+            <Section>
+              <Fence pos="3816.667,1650" />
+              <Fence pos="9683.334,1666.667" />
+              <Fence pos="9666.667,9016.667" />
+              <Fence pos="3816.667,9000" />
+            </Section>
+            <Section>
+              <Fence pos="9650,9050" />
+              <Fence pos="9633.334,15550" />
+              <Fence pos="3866.667,15550" />
+              <Fence pos="3816.667,9033.334" />
+            </Section>
+            <Section>
+              <Fence pos="3816.667,9016.667" />
+              <Fence pos="1916.667,11416.67" />
+              <Fence pos="-1533.333,14300" />
+              <Fence pos="3850,15533.33" />
+            </Section>
+            <Section>
+              <Fence pos="-2083.333,9216.667" />
+              <Fence pos="-2916.667,10400" />
+              <Fence pos="-3100,12933.33" />
+              <Fence pos="-8716.667,12883.33" />
+              <Fence pos="-8716.667,5716.667" />
+              <Fence pos="-6800,5766.667" />
+              <Fence pos="-4866.667,8233.334" />
+            </Section>
+            <Section>
+              <Fence pos="-6833.333,1633.333" />
+              <Fence pos="-6800,5766.667" />
+              <Fence pos="-11866.67,5700" />
+              <Fence pos="-11616.67,1616.667" />
+            </Section>
+            <Section>
+              <Fence pos="-8700,5716.667" />
+              <Fence pos="-8750,12883.33" />
+              <Fence pos="-11633.33,12833.33" />
+              <Fence pos="-11866.67,5716.667" />
+            </Section>
+            <Section>
+              <Fence pos="-11583.33,1650" />
+              <Fence pos="-15350,1650" />
+              <Fence pos="-15400,5716.667" />
+              <Fence pos="-15366.67,12866.67" />
+              <Fence pos="-11650,12850" />
+              <Fence pos="-11866.67,5700" />
+            </Section>
+            <Section>
+              <Fence pos="-9716.667,0" />
+              <Fence pos="-9683.334,1600" />
+              <Fence pos="4366.667,1633.333" />
+              <Fence pos="4516.667,16.66667" />
+            </Section>
+            <Section>
+              <Fence pos="4333.333,1633.333" />
+              <Fence pos="4500,16.66667" />
+              <Fence pos="15316.67,0" />
+              <Fence pos="15316.67,1616.667" />
+            </Section>
+            <Section>
+              <Fence pos="9633.334,1683.333" />
+              <Fence pos="15283.33,1633.333" />
+              <Fence pos="15300,15483.33" />
+              <Fence pos="9616.667,15550" />
+            </Section>
+            <Section>
+              <Fence pos="-9711.11,11.11111" />
+              <Fence pos="-9677.777,1622.222" />
+              <Fence pos="-15388.89,1677.778" />
+              <Fence pos="-15355.55,0" />
+            </Section>
+            <Section>
+              <Fence pos="3866.667,15555.55" />
+              <Fence pos="-1544.444,14300" />
+              <Fence pos="-3088.889,12933.33" />
+              <Fence pos="-15355.55,12877.78" />
+              <Fence pos="-15366.67,15666.67" />
+            </Section>
+          </Area_2>
+        </Area_1>
+
+        <Area_1 name="VELIKA_4">
+          <Bounds>
+            <Fence pos="15300,15650"/>
+            <Fence pos="-15550,15750"/>
+            <Fence pos="-15450,30850"/>
+            <Fence pos="15250,30700"/>
+          </Bounds>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-50,15550" />
+              <Fence pos="-50,30650" />
+              <Fence pos="-15350,30750" />
+              <Fence pos="-15450,15700" />
+            </Bounds>
+            <Section>
+              <Fence pos="-100,15450" />
+              <Fence pos="-8450,15600" />
+              <Fence pos="-8450,22100" />
+              <Fence pos="50,22200" />
+            </Section>
+            <Section>
+              <Fence pos="0,22250" />
+              <Fence pos="0,30700" />
+              <Fence pos="-8800,30750" />
+              <Fence pos="-8500,22100" />
+            </Section>
+            <Section>
+              <Fence pos="-8550,15600" />
+              <Fence pos="-8450,22200" />
+              <Fence pos="-15550,22100" />
+              <Fence pos="-15350,15750" />
+            </Section>
+            <Section>
+              <Fence pos="-8500,22250" />
+              <Fence pos="-8850,30750" />
+              <Fence pos="-15400,30850" />
+              <Fence pos="-15500,22100" />
+            </Section>
+
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="15250,15500" />
+              <Fence pos="-150,15650" />
+              <Fence pos="-50,30700" />
+              <Fence pos="15300,30700" />
+            </Bounds>
+            <Section>
+              <Fence pos="8250,15550" />
+              <Fence pos="7650,23100" />
+              <Fence pos="15300,23350" />
+              <Fence pos="15250,15600" />
+            </Section>
+            <Section>
+              <Fence pos="8100,15600" />
+              <Fence pos="0,15750" />
+              <Fence pos="-200,22250" />
+              <Fence pos="8050,22750" />
+            </Section>
+            <Section>
+              <Fence pos="-150,22400" />
+              <Fence pos="15200,23350" />
+              <Fence pos="15200,30700" />
+              <Fence pos="-50,30700" />
+            </Section>
+          </Area_2>
+        </Area_1>
+        <Area_1 name="VELIKA_5">
+          <Bounds>
+            <Fence pos="50,30650" />
+            <Fence pos="21200,30700" />
+            <Fence pos="21350,50300" />
+            <Fence pos="-50,50450" />
+          </Bounds>
+          <Area_2 isSameAsParent="True">
+            <Bounds>
+              <Fence pos="50,30650" />
+              <Fence pos="21200,30700" />
+              <Fence pos="21350,50300" />
+              <Fence pos="-50,50450" />
+            </Bounds>
+            <Section>
+              <Fence pos="50,30650" />
+              <Fence pos="21200,30700" />
+              <Fence pos="21350,50300" />
+              <Fence pos="-50,50450" />
+            </Section>
+          </Area_2>
+        </Area_1>
+      </Area>
+      <Area name="VAL_AUREM" channels="3">
+        <Bounds>
+          <Fence pos="-46250,-30800" />
+          <Fence pos="-92100,-30700" />
+          <Fence pos="-92350,-100700" />
+          <Fence pos="-46150,-100700" />
+        </Bounds>
+
+        <Area_1 name="COLOSAL_RUINS">
+          <Bounds>
+            <Fence pos="-15550,-92050" />
+            <Fence pos="-15050,-30600" />
+            <Fence pos="-46000,-30750" />
+            <Fence pos="-46200,-91850" />
+          </Bounds>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-30450,-92000" />
+              <Fence pos="-30200,-79750" />
+              <Fence pos="-46200,-79800" />
+              <Fence pos="-46100,-91800" />
+            </Bounds>
+            <Section>
+              <Fence pos="-30400,-91900" />
+              <Fence pos="-30350,-86150" />
+              <Fence pos="-39100,-86100" />
+              <Fence pos="-39150,-91850" />
+            </Section>
+            <Section>
+              <Fence pos="-30450,-86150" />
+              <Fence pos="-30250,-79800" />
+              <Fence pos="-39100,-79750" />
+              <Fence pos="-39150,-86050" />
+            </Section>
+            <Section>
+              <Fence pos="-39250,-91950" />
+              <Fence pos="-39200,-79800" />
+              <Fence pos="-46250,-79700" />
+              <Fence pos="-46100,-91850" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-30500,-92000" />
+              <Fence pos="-15500,-92050" />
+              <Fence pos="-15550,-79750" />
+              <Fence pos="-30400,-79750" />
+            </Bounds>
+            <Section>
+              <Fence pos="-24850,-92050" />
+              <Fence pos="-24900,-86100" />
+              <Fence pos="-15600,-86050" />
+              <Fence pos="-15550,-92050" />
+            </Section>
+            <Section>
+              <Fence pos="-15650,-86050" />
+              <Fence pos="-15500,-79650" />
+              <Fence pos="-24900,-79700" />
+              <Fence pos="-24950,-86050" />
+            </Section>
+            <Section>
+              <Fence pos="-30600,-91950" />
+              <Fence pos="-25000,-92050" />
+              <Fence pos="-25000,-79800" />
+              <Fence pos="-30500,-79650" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-32600,-79850" />
+              <Fence pos="-31950,-67100" />
+              <Fence pos="-46150,-67150" />
+              <Fence pos="-46150,-79650" />
+            </Bounds>
+            <Section>
+              <Fence pos="-32300,-73500" />
+              <Fence pos="-46350,-73500" />
+              <Fence pos="-46150,-79600" />
+              <Fence pos="-32700,-79700" />
+            </Section>
+            <Section>
+              <Fence pos="-32400,-73450" />
+              <Fence pos="-32050,-67050" />
+              <Fence pos="-46250,-67150" />
+              <Fence pos="-46350,-73550" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-32700,-79650" />
+              <Fence pos="-32250,-67200" />
+              <Fence pos="-15650,-67200" />
+              <Fence pos="-15550,-79700" />
+            </Bounds>
+            <Section>
+              <Fence pos="-26300,-79650" />
+              <Fence pos="-26350,-67250" />
+              <Fence pos="-15550,-67150" />
+              <Fence pos="-15600,-79600" />
+            </Section>
+            <Section>
+              <Fence pos="-26400,-79650" />
+              <Fence pos="-26400,-67250" />
+              <Fence pos="-32150,-67150" />
+              <Fence pos="-32700,-79750" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-15700,-67150" />
+              <Fence pos="-15600,-52500" />
+              <Fence pos="-35600,-52450" />
+              <Fence pos="-35550,-67150" />
+            </Bounds>
+            <Section>
+              <Fence pos="-24900,-67200" />
+              <Fence pos="-24900,-58800" />
+              <Fence pos="-35650,-58800" />
+              <Fence pos="-35550,-67200" />
+            </Section>
+            <Section>
+              <Fence pos="-24950,-67250" />
+              <Fence pos="-15700,-67200" />
+              <Fence pos="-15600,-58850" />
+              <Fence pos="-24950,-58750" />
+            </Section>
+            <Section>
+              <Fence pos="-15700,-52500" />
+              <Fence pos="-15650,-58800" />
+              <Fence pos="-25000,-58700" />
+              <Fence pos="-24850,-52550" />
+            </Section>
+            <Section>
+              <Fence pos="-25100,-58700" />
+              <Fence pos="-24900,-52450" />
+              <Fence pos="-35600,-52450" />
+              <Fence pos="-35650,-58700" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-35600,-67200" />
+              <Fence pos="-35650,-54450" />
+              <Fence pos="-46150,-54600" />
+              <Fence pos="-46150,-67200" />
+            </Bounds>
+            <Section>
+              <Fence pos="-46250,-67200" />
+              <Fence pos="-35600,-67100" />
+              <Fence pos="-35650,-60850" />
+              <Fence pos="-46200,-60850" />
+            </Section>
+            <Section>
+              <Fence pos="-35600,-60850" />
+              <Fence pos="-35800,-54450" />
+              <Fence pos="-46150,-54600" />
+              <Fence pos="-46200,-60800" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-35700,-54400" />
+              <Fence pos="-35500,-52450" />
+              <Fence pos="-15600,-52500" />
+              <Fence pos="-15700,-47400" />
+              <Fence pos="-33550,-40550" />
+              <Fence pos="-46150,-40550" />
+              <Fence pos="-46200,-54600" />
+            </Bounds>
+            <Section>
+              <Fence pos="-35600,-52400" />
+              <Fence pos="-35700,-40600" />
+              <Fence pos="-46150,-40600" />
+              <Fence pos="-46200,-54600" />
+              <Fence pos="-35800,-54400" />
+            </Section>
+            <Section>
+              <Fence pos="-35600,-52400" />
+              <Fence pos="-28400,-52500" />
+              <Fence pos="-28400,-42650" />
+              <Fence pos="-33600,-40500" />
+              <Fence pos="-35750,-40550" />
+            </Section>
+            <Section>
+              <Fence pos="-15650,-52500" />
+              <Fence pos="-15750,-47400" />
+              <Fence pos="-28300,-42700" />
+              <Fence pos="-28400,-52500" />
+            </Section>
+            <Section>
+              <Fence pos="-45900,-40550" />
+              <Fence pos="-33600,-40400" />
+              <Fence pos="-31250,-37800" />
+              <Fence pos="-31750,-30700" />
+              <Fence pos="-45800,-30800" />
+              <Fence pos="-45850,-40500" />
+            </Section>
+          </Area_2>
+        </Area_1>
+        <Area_1 name="CHEBIKA">
+          <Bounds>
+            <Fence pos="-15450,-30150" />
+            <Fence pos="-15350,-50" />
+            <Fence pos="-30500,100" />
+            <Fence pos="-30750,-30100" />
+          </Bounds>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-30550,-30100" />
+              <Fence pos="-15400,-30200" />
+              <Fence pos="-15400,-17100" />
+              <Fence pos="-30650,-17200" />
+            </Bounds>
+            <Section>
+              <Fence pos="-30600,-30000" />
+              <Fence pos="-23250,-30200" />
+              <Fence pos="-23200,-17150" />
+              <Fence pos="-30550,-17150" />
+            </Section>
+            <Section>
+              <Fence pos="-23150,-30050" />
+              <Fence pos="-15450,-30200" />
+              <Fence pos="-15350,-17100" />
+              <Fence pos="-23250,-17150" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-30700,-17100" />
+              <Fence pos="-15400,-17000" />
+              <Fence pos="-15300,-100" />
+              <Fence pos="-30500,50" />
+            </Bounds>
+            <Section>
+              <Fence pos="-15450,-16950" />
+              <Fence pos="-30750,-17000" />
+              <Fence pos="-30650,-7300" />
+              <Fence pos="-15350,-7350" />
+            </Section>
+            <Section>
+              <Fence pos="-15350,-100" />
+              <Fence pos="-15450,-7350" />
+              <Fence pos="-30650,-7250" />
+              <Fence pos="-30450,150" />
+            </Section>
+          </Area_2>
+        </Area_1>
+        <Area_1 name="BASILIK_CRAG">
+          <Bounds>
+            <Fence pos="-61450,-30500" />
+            <Fence pos="-30700,-30700" />
+            <Fence pos="-30650,-50" />
+            <Fence pos="-61400,-200" />
+          </Bounds>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-61400,-30500" />
+              <Fence pos="-49300,-30750" />
+              <Fence pos="-49300,-21950" />
+              <Fence pos="-61200,-22050" />
+            </Bounds>
+            <Section>
+              <Fence pos="-61500,-30500" />
+              <Fence pos="-55200,-30600" />
+              <Fence pos="-55150,-22000" />
+              <Fence pos="-61200,-21950" />
+            </Section>
+            <Section>
+              <Fence pos="-55250,-30600" />
+              <Fence pos="-49350,-30750" />
+              <Fence pos="-49350,-21900" />
+              <Fence pos="-55200,-22000" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-61250,-21950" />
+              <Fence pos="-46450,-22100" />
+              <Fence pos="-46450,-12150" />
+              <Fence pos="-61300,-12250" />
+            </Bounds>
+            <Section>
+              <Fence pos="-46450,-22200" />
+              <Fence pos="-46550,-12200" />
+              <Fence pos="-52350,-12200" />
+              <Fence pos="-52300,-22000" />
+            </Section>
+            <Section>
+              <Fence pos="-52350,-22000" />
+              <Fence pos="-52500,-12200" />
+              <Fence pos="-56950,-12250" />
+              <Fence pos="-56750,-22050" />
+            </Section>
+            <Section>
+              <Fence pos="-61250,-21850" />
+              <Fence pos="-56850,-21950" />
+              <Fence pos="-57000,-12200" />
+              <Fence pos="-61350,-12200" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-46350,-12200" />
+              <Fence pos="-46450,-200" />
+              <Fence pos="-61300,-250" />
+              <Fence pos="-61450,-12150" />
+            </Bounds>
+            <Section>
+              <Fence pos="-53700,-12150" />
+              <Fence pos="-53850,-5750" />
+              <Fence pos="-61350,-5450" />
+              <Fence pos="-61350,-12150" />
+            </Section>
+            <Section>
+              <Fence pos="-53700,-12150" />
+              <Fence pos="-46450,-12150" />
+              <Fence pos="-46450,-5850" />
+              <Fence pos="-53950,-5750" />
+            </Section>
+            <Section>
+              <Fence pos="-61450,-5400" />
+              <Fence pos="-46450,-5800" />
+              <Fence pos="-46650,-150" />
+              <Fence pos="-61350,-200" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-49300,-22050" />
+              <Fence pos="-30650,-22050" />
+              <Fence pos="-30700,-30650" />
+              <Fence pos="-49350,-30700" />
+            </Bounds>
+            <Section>
+              <Fence pos="-30700,-30700" />
+              <Fence pos="-37800,-30700" />
+              <Fence pos="-37550,-22050" />
+              <Fence pos="-30650,-22000" />
+            </Section>
+            <Section>
+              <Fence pos="-37950,-30550" />
+              <Fence pos="-37650,-22100" />
+              <Fence pos="-43550,-22050" />
+              <Fence pos="-43600,-30750" />
+            </Section>
+            <Section>
+              <Fence pos="-43600,-22000" />
+              <Fence pos="-49450,-22050" />
+              <Fence pos="-49400,-30650" />
+              <Fence pos="-43550,-30700" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-46650,-12100" />
+              <Fence pos="-30650,-12200" />
+              <Fence pos="-30650,-21950" />
+              <Fence pos="-46450,-21950" />
+            </Bounds>
+            <Section>
+              <Fence pos="-37650,-21750" />
+              <Fence pos="-37750,-12100" />
+              <Fence pos="-46700,-12150" />
+              <Fence pos="-46450,-21900" />
+            </Section>
+            <Section>
+              <Fence pos="-37800,-12050" />
+              <Fence pos="-30550,-12200" />
+              <Fence pos="-30700,-22050" />
+              <Fence pos="-37750,-21950" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-46450,-12100" />
+              <Fence pos="-30650,-12200" />
+              <Fence pos="-30550,0" />
+              <Fence pos="-46450,-100" />
+            </Bounds>
+            <Section>
+              <Fence pos="-46550,-12150" />
+              <Fence pos="-37850,-12100" />
+              <Fence pos="-37750,0" />
+              <Fence pos="-46400,-100" />
+            </Section>
+            <Section>
+              <Fence pos="-37850,-12000" />
+              <Fence pos="-30650,-12200" />
+              <Fence pos="-30650,-50" />
+              <Fence pos="-37800,-100" />
+            </Section>
+          </Area_2>
+        </Area_1>
+        <Area_1 name="AURUM_TULUFAN">
+          <Bounds>
+            <Fence pos="-46250,-30800" />
+            <Fence pos="-92100,-30700" />
+            <Fence pos="-92350,-100700" />
+            <Fence pos="-46150,-100700" />
+          </Bounds>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-46200,-30750" />
+              <Fence pos="-46150,-50300" />
+              <Fence pos="-53300,-50350" />
+              <Fence pos="-55200,-47950" />
+              <Fence pos="-60750,-47350" />
+              <Fence pos="-68650,-41600" />
+              <Fence pos="-69100,-37100" />
+              <Fence pos="-69200,-30700" />
+            </Bounds>
+            <Section>
+              <Fence pos="-46250,-37750" />
+              <Fence pos="-56800,-37800" />
+              <Fence pos="-56800,-30650" />
+              <Fence pos="-46200,-30800" />
+            </Section>
+            <Section>
+              <Fence pos="-46200,-46200" />
+              <Fence pos="-56800,-46150" />
+              <Fence pos="-56850,-37750" />
+              <Fence pos="-46250,-37750" />
+            </Section>
+            <Section>
+              <Fence pos="-62400,-46200" />
+              <Fence pos="-56800,-46150" />
+              <Fence pos="-56800,-30700" />
+              <Fence pos="-63950,-30650" />
+              <Fence pos="-63950,-45100" />
+            </Section>
+            <Section>
+              <Fence pos="-64000,-30750" />
+              <Fence pos="-64000,-45000" />
+              <Fence pos="-69150,-41350" />
+              <Fence pos="-69250,-30750" />
+            </Section>
+            <Section>
+              <Fence pos="-62350,-46150" />
+              <Fence pos="-60850,-47350" />
+              <Fence pos="-55300,-47950" />
+              <Fence pos="-53300,-50350" />
+              <Fence pos="-46150,-50350" />
+              <Fence pos="-46250,-46100" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-46200,-50400" />
+              <Fence pos="-53200,-50350" />
+              <Fence pos="-55350,-47900" />
+              <Fence pos="-60900,-47400" />
+              <Fence pos="-63950,-47150" />
+              <Fence pos="-63850,-73400" />
+              <Fence pos="-46200,-73500" />
+            </Bounds>
+            <Section>
+              <Fence pos="-63850,-67200" />
+              <Fence pos="-46250,-67200" />
+              <Fence pos="-46150,-73450" />
+              <Fence pos="-63800,-73300" />
+            </Section>
+            <Section>
+              <Fence pos="-63900,-67200" />
+              <Fence pos="-63900,-58750" />
+              <Fence pos="-46200,-58850" />
+              <Fence pos="-46300,-67150" />
+            </Section>
+            <Section>
+              <Fence pos="-46150,-58900" />
+              <Fence pos="-46150,-47150" />
+              <Fence pos="-64000,-47050" />
+              <Fence pos="-63950,-58700" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-92150,-52450" />
+              <Fence pos="-64050,-52500" />
+              <Fence pos="-64000,-45200" />
+              <Fence pos="-69250,-41300" />
+              <Fence pos="-69300,-30700" />
+              <Fence pos="-91950,-30700" />
+            </Bounds>
+            <Section>
+              <Fence pos="-92200,-52450" />
+              <Fence pos="-78150,-52400" />
+              <Fence pos="-78150,-30700" />
+              <Fence pos="-92000,-30700" />
+            </Section>
+            <Section>
+              <Fence pos="-78100,-52400" />
+              <Fence pos="-64050,-52350" />
+              <Fence pos="-64100,-30700" />
+              <Fence pos="-78300,-30600" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-63850,-73300" />
+              <Fence pos="-92200,-73750" />
+              <Fence pos="-92250,-52500" />
+              <Fence pos="-64050,-52350" />
+            </Bounds>
+            <Section>
+              <Fence pos="-92300,-73750" />
+              <Fence pos="-63950,-73250" />
+              <Fence pos="-64000,-67150" />
+              <Fence pos="-92100,-67200" />
+            </Section>
+            <Section>
+              <Fence pos="-64050,-67100" />
+              <Fence pos="-64000,-60800" />
+              <Fence pos="-92300,-60850" />
+              <Fence pos="-92200,-67150" />
+            </Section>
+            <Section>
+              <Fence pos="-64200,-52350" />
+              <Fence pos="-64050,-60750" />
+              <Fence pos="-92350,-60750" />
+              <Fence pos="-92350,-52350" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-46200,-100850" />
+              <Fence pos="-46100,-73400" />
+              <Fence pos="-92300,-73800" />
+              <Fence pos="-92300,-100700" />
+            </Bounds>
+            <Section>
+              <Fence pos="-92250,-94450" />
+              <Fence pos="-46100,-94550" />
+              <Fence pos="-46350,-100750" />
+              <Fence pos="-92200,-100650" />
+            </Section>
+            <Section>
+              <Fence pos="-46250,-94450" />
+              <Fence pos="-46200,-84050" />
+              <Fence pos="-92350,-84000" />
+              <Fence pos="-92350,-94400" />
+            </Section>
+            <Section>
+              <Fence pos="-46150,-84000" />
+              <Fence pos="-46200,-73350" />
+              <Fence pos="-92350,-73750" />
+              <Fence pos="-92450,-84000" />
+            </Section>
+          </Area_2>
+        </Area_1>
+      </Area>
+      <Area name="POPORIA" channels="2">
+        <Bounds>
+          <Fence pos="-50,84150" />
+          <Fence pos="0,14800" />
+          <Fence pos="-60450,14700" />
+          <Fence pos="-60400,84050" />
+        </Bounds>
+        <Aera_1 name="VAL_OF_THE_FANG_CLIFFS_PARAANON_POPOLION">
+          <Bounds>
+            <Fence pos="-30900,31250" />
+            <Fence pos="0,31150" />
+            <Fence pos="0,84100" />
+            <Fence pos="-30350,84100" />
+          </Bounds>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-30750,31350" />
+              <Fence pos="50,31300" />
+              <Fence pos="-50,44150" />
+              <Fence pos="-30800,44150" />
+            </Bounds>
+            <Section>
+              <Fence pos="-30850,31350" />
+              <Fence pos="-21250,31300" />
+              <Fence pos="-21300,44100" />
+              <Fence pos="-30900,44050" />
+            </Section>
+            <Section>
+              <Fence pos="-21250,31300" />
+              <Fence pos="-10750,31300" />
+              <Fence pos="-10600,44100" />
+              <Fence pos="-21350,44100" />
+            </Section>
+            <Section>
+              <Fence pos="-10800,31300" />
+              <Fence pos="0,31350" />
+              <Fence pos="0,44200" />
+              <Fence pos="-10650,44200" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-30300,56750" />
+              <Fence pos="-17950,56800" />
+              <Fence pos="-17950,84050" />
+              <Fence pos="-30350,84100" />
+            </Bounds>
+            <Section>
+              <Fence pos="-30300,56800" />
+              <Fence pos="-18100,56850" />
+              <Fence pos="-18050,65100" />
+              <Fence pos="-30350,65150" />
+            </Section>
+            <Section>
+              <Fence pos="-18000,65050" />
+              <Fence pos="-30300,65150" />
+              <Fence pos="-30450,75600" />
+              <Fence pos="-18100,75900" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds></Bounds>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-30600,44200" />
+              <Fence pos="-50,44200" />
+              <Fence pos="0,56750" />
+              <Fence pos="-30200,56800" />
+            </Bounds>
+            <Section>
+              <Fence pos="-30700,44200" />
+              <Fence pos="-21400,44250" />
+              <Fence pos="-21450,56750" />
+              <Fence pos="-30350,56750" />
+            </Section>
+            <Section>
+              <Fence pos="-21350,44150" />
+              <Fence pos="-7150,44200" />
+              <Fence pos="-7050,56800" />
+              <Fence pos="-21350,56850" />
+            </Section>
+            <Section>
+              <Fence pos="-7150,44200" />
+              <Fence pos="-100,44200" />
+              <Fence pos="0,56700" />
+              <Fence pos="-7100,56800" />
+            </Section>
+          </Area_2>
+        </Aera_1>
+        <Area_1 name="LAKE_OF_TEARS">
+          <Bounds>
+            <Fence pos="-30550,62100" />
+            <Fence pos="-30750,30950" />
+            <Fence pos="-17800,30750" />
+            <Fence pos="-17850,15300" />
+            <Fence pos="-60450,14650" />
+            <Fence pos="-60450,61950" />
+          </Bounds>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-39100,29450" />
+              <Fence pos="-30900,29400" />
+              <Fence pos="-30750,37900" />
+              <Fence pos="-39100,37850" />
+            </Bounds>
+            <Section>
+              <Fence pos="-39150,29500" />
+              <Fence pos="-31050,29450" />
+              <Fence pos="-30800,33650" />
+              <Fence pos="-39200,33600" />
+            </Section>
+            <Section>
+              <Fence pos="-30850,33600" />
+              <Fence pos="-30850,37900" />
+              <Fence pos="-39150,37900" />
+              <Fence pos="-39200,33600" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-46050,29400" />
+              <Fence pos="-30950,29400" />
+              <Fence pos="-30650,15500" />
+              <Fence pos="-46000,15450" />
+            </Bounds>
+            <Section>
+              <Fence pos="-45950,15500" />
+              <Fence pos="-39150,15450" />
+              <Fence pos="-39050,21050" />
+              <Fence pos="-46050,21000" />
+            </Section>
+            <Section>
+              <Fence pos="-39250,15450" />
+              <Fence pos="-30800,15550" />
+              <Fence pos="-30800,21050" />
+              <Fence pos="-39100,21050" />
+            </Section>
+            <Section>
+              <Fence pos="-30850,21050" />
+              <Fence pos="-30850,25200" />
+              <Fence pos="-39200,25250" />
+              <Fence pos="-39100,21150" />
+            </Section>
+            <Section>
+              <Fence pos="-39150,21250" />
+              <Fence pos="-46150,21100" />
+              <Fence pos="-46100,25200" />
+              <Fence pos="-39250,25250" />
+            </Section>
+            <Section>
+              <Fence pos="-39100,25250" />
+              <Fence pos="-39100,29350" />
+              <Fence pos="-46150,29350" />
+              <Fence pos="-46050,25200" />
+            </Section>
+            <Section>
+              <Fence pos="-39150,25300" />
+              <Fence pos="-30900,25200" />
+              <Fence pos="-31000,29400" />
+              <Fence pos="-39050,29450" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-30800,15500" />
+              <Fence pos="-17800,15300" />
+              <Fence pos="-17750,30650" />
+              <Fence pos="-30900,30900" />
+            </Bounds>
+            <Section>
+              <Fence pos="-30800,15400" />
+              <Fence pos="-23150,15400" />
+              <Fence pos="-22700,21000" />
+              <Fence pos="-30800,20950" />
+            </Section>
+            <Section>
+              <Fence pos="-22800,21000" />
+              <Fence pos="-22700,25250" />
+              <Fence pos="-30850,25250" />
+              <Fence pos="-30800,21000" />
+            </Section>
+            <Section>
+              <Fence pos="-22750,25250" />
+              <Fence pos="-22350,30750" />
+              <Fence pos="-30800,30900" />
+              <Fence pos="-31050,25200" />
+            </Section>
+            <Section>
+              <Fence pos="-23150,15450" />
+              <Fence pos="-17800,15300" />
+              <Fence pos="-17850,30650" />
+              <Fence pos="-22350,30650" />
+            </Section>
+            <Area_2 isSameAsParent="False">
+              <Bounds></Bounds>
+
+            </Area_2>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-39250,29400" />
+              <Fence pos="-39200,37850" />
+              <Fence pos="-59850,37900" />
+              <Fence pos="-59950,29400" />
+            </Bounds>
+            <Section>
+              <Fence pos="-59950,29400" />
+              <Fence pos="-55000,29400" />
+              <Fence pos="-54950,37800" />
+              <Fence pos="-59850,37900" />
+            </Section>
+            <Section>
+              <Fence pos="-55000,29400" />
+              <Fence pos="-49850,29400" />
+              <Fence pos="-49700,37850" />
+              <Fence pos="-54950,37850" />
+            </Section>
+            <Section>
+              <Fence pos="-49850,29400" />
+              <Fence pos="-44100,29400" />
+              <Fence pos="-43700,37850" />
+              <Fence pos="-49650,37800" />
+            </Section>
+            <Section>
+              <Fence pos="-44200,29400" />
+              <Fence pos="-39150,29450" />
+              <Fence pos="-39200,37850" />
+              <Fence pos="-43750,37800" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-59900,37850" />
+              <Fence pos="-59500,48350" />
+              <Fence pos="-30600,48300" />
+              <Fence pos="-30800,37900" />
+            </Bounds>
+            <Section>
+              <Fence pos="-59900,37900" />
+              <Fence pos="-53250,37750" />
+              <Fence pos="-53300,42050" />
+              <Fence pos="-59800,41950" />
+            </Section>
+            <Section>
+              <Fence pos="-53300,42050" />
+              <Fence pos="-53350,48400" />
+              <Fence pos="-59500,48350" />
+              <Fence pos="-59750,42100" />
+            </Section>
+            <Section>
+              <Fence pos="-53250,37850" />
+              <Fence pos="-46150,37900" />
+              <Fence pos="-46150,42000" />
+              <Fence pos="-53350,42050" />
+            </Section>
+            <Section>
+              <Fence pos="-46150,42050" />
+              <Fence pos="-46200,48250" />
+              <Fence pos="-53350,48350" />
+              <Fence pos="-53350,42050" />
+            </Section>
+            <Section>
+              <Fence pos="-46250,37900" />
+              <Fence pos="-39200,37900" />
+              <Fence pos="-39100,42100" />
+              <Fence pos="-46150,42100" />
+            </Section>
+            <Section>
+              <Fence pos="-39150,42100" />
+              <Fence pos="-39050,48450" />
+              <Fence pos="-46300,48300" />
+              <Fence pos="-46200,42150" />
+            </Section>
+            <Section>
+              <Fence pos="-39150,37850" />
+              <Fence pos="-30850,37850" />
+              <Fence pos="-30700,41950" />
+              <Fence pos="-39150,42150" />
+            </Section>
+            <Section>
+              <Fence pos="-30850,42050" />
+              <Fence pos="-30650,48300" />
+              <Fence pos="-39100,48350" />
+              <Fence pos="-39200,42150" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="-46150,48400" />
+              <Fence pos="-46200,61850" />
+              <Fence pos="-30750,62100" />
+              <Fence pos="-30700,48350" />
+            </Bounds>
+            <Section>
+              <Fence pos="-46050,48400" />
+              <Fence pos="-39050,48450" />
+              <Fence pos="-39100,52600" />
+              <Fence pos="-46200,52500" />
+            </Section>
+            <Section>
+              <Fence pos="-39050,48450" />
+              <Fence pos="-30800,48400" />
+              <Fence pos="-30800,52550" />
+              <Fence pos="-39150,52600" />
+            </Section>
+            <Section>
+              <Fence pos="-46250,52550" />
+              <Fence pos="-39200,52650" />
+              <Fence pos="-39000,56800" />
+              <Fence pos="-46250,56750" />
+            </Section>
+            <Section>
+              <Fence pos="-30850,52550" />
+              <Fence pos="-39150,52650" />
+              <Fence pos="-38900,56800" />
+              <Fence pos="-30750,56800" />
+            </Section>
+            <Section>
+              <Fence pos="-30750,56850" />
+              <Fence pos="-30850,62050" />
+              <Fence pos="-39050,62000" />
+              <Fence pos="-39000,56750" />
+            </Section>
+            <Section>
+              <Fence pos="-39050,56800" />
+              <Fence pos="-39050,61950" />
+              <Fence pos="-46200,62000" />
+              <Fence pos="-46200,56700" />
+            </Section>
+          </Area_2>
+        </Area_1>
+      </Area>
+      <Area name="ARCADIA" channels="3">
+        <Area_1 name="CELESTIAL HILLS">
+          <Bounds>
+            <Fence pos="78600,-50" />
+            <Fence pos="65800,-3350" />
+            <Fence pos="57950,-200" />
+            <Fence pos="46100,350" />
+            <Fence pos="45950,-15350" />
+            <Fence pos="30600,-15350" />
+            <Fence pos="30550,29450" />
+            <Fence pos="46150,29450" />
+            <Fence pos="46050,15600" />
+            <Fence pos="66150,15500" />
+            <Fence pos="74750,10700" />
+          </Bounds>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="60800,-1300" />
+              <Fence pos="63200,13600" />
+              <Fence pos="71650,12600" />
+              <Fence pos="71650,4300" />
+              <Fence pos="78050,4100" />
+              <Fence pos="78050,-2050" />
+              <Fence pos="60850,-1250" />
+            </Bounds>
+            <Section>
+              <Fence pos="71600,4300" />
+              <Fence pos="70550,-1700" />
+              <Fence pos="78000,-2050" />
+              <Fence pos="78000,4200" />
+            </Section>
+            <Section>
+              <Fence pos="71600,6250" />
+              <Fence pos="62000,6350" />
+              <Fence pos="60750,-1300" />
+              <Fence pos="70450,-1850" />
+            </Section>
+            <Section>
+              <Fence pos="71600,6250" />
+              <Fence pos="71650,12600" />
+              <Fence pos="63200,13600" />
+              <Fence pos="61950,6400" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="60700,-1300" />
+              <Fence pos="63200,13650" />
+              <Fence pos="46050,15800" />
+              <Fence pos="46050,450" />
+            </Bounds>
+            <Section>
+              <Fence pos="46000,500" />
+              <Fence pos="46050,4300" />
+              <Fence pos="53200,4250" />
+              <Fence pos="53200,-450" />
+            </Section>
+            <Section>
+              <Fence pos="53150,4250" />
+              <Fence pos="61600,4250" />
+              <Fence pos="60600,-1300" />
+              <Fence pos="53100,-400" />
+            </Section>
+            <Section>
+              <Fence pos="62500,9600" />
+              <Fence pos="56700,9800" />
+              <Fence pos="56800,4300" />
+              <Fence pos="61550,4250" />
+            </Section>
+            <Section>
+              <Fence pos="62450,9600" />
+              <Fence pos="63150,13650" />
+              <Fence pos="56750,14400" />
+              <Fence pos="56700,9800" />
+            </Section>
+            <Section>
+              <Fence pos="56700,11200" />
+              <Fence pos="46000,11300" />
+              <Fence pos="45950,15850" />
+              <Fence pos="56700,14400" />
+            </Section>
+            <Section>
+              <Fence pos="51650,4200" />
+              <Fence pos="51350,11200" />
+              <Fence pos="46050,11250" />
+              <Fence pos="46100,4350" />
+            </Section>
+            <Section>
+              <Fence pos="51600,4200" />
+              <Fence pos="56700,4250" />
+              <Fence pos="56700,11200" />
+              <Fence pos="51300,11200" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="46000,2150" />
+              <Fence pos="30550,2050" />
+              <Fence pos="30600,-15350" />
+              <Fence pos="46000,-15350" />
+            </Bounds>
+            <Section>
+              <Fence pos="46000,-15350" />
+              <Fence pos="46100,-10500" />
+              <Fence pos="39000,-10500" />
+              <Fence pos="39050,-15350" />
+            </Section>
+            <Section>
+              <Fence pos="39100,-15450" />
+              <Fence pos="39100,-10450" />
+              <Fence pos="30600,-10450" />
+              <Fence pos="30550,-15350" />
+            </Section>
+            <Section>
+              <Fence pos="35450,-10400" />
+              <Fence pos="35400,-4100" />
+              <Fence pos="30500,-4150" />
+              <Fence pos="30550,-10500" />
+            </Section>
+            <Section>
+              <Fence pos="41450,-4200" />
+              <Fence pos="41300,-10450" />
+              <Fence pos="35500,-10500" />
+              <Fence pos="35400,-4200" />
+            </Section>
+            <Section>
+              <Fence pos="41300,-10350" />
+              <Fence pos="46050,-10400" />
+              <Fence pos="46000,-4150" />
+              <Fence pos="41300,-4100" />
+            </Section>
+            <Section>
+              <Fence pos="38950,-4250" />
+              <Fence pos="38900,2050" />
+              <Fence pos="45950,2200" />
+              <Fence pos="45950,-4150" />
+            </Section>
+            <Section>
+              <Fence pos="38850,-4250" />
+              <Fence pos="38850,2050" />
+              <Fence pos="30600,2050" />
+              <Fence pos="30500,-4150" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="46000,2200" />
+              <Fence pos="46150,19000" />
+              <Fence pos="30600,18950" />
+              <Fence pos="30550,2100" />
+            </Bounds>
+            <Section>
+              <Fence pos="45900,2200" />
+              <Fence pos="35500,2200" />
+              <Fence pos="35500,8450" />
+              <Fence pos="30500,8400" />
+              <Fence pos="30500,2050" />
+            </Section>
+            <Section>
+              <Fence pos="41300,2200" />
+              <Fence pos="40900,8450" />
+              <Fence pos="35350,8500" />
+              <Fence pos="35400,2050" />
+            </Section>
+            <Section>
+              <Fence pos="45950,2150" />
+              <Fence pos="46100,8450" />
+              <Fence pos="40800,8450" />
+              <Fence pos="41250,2100" />
+            </Section>
+            <Section>
+              <Fence pos="46000,12650" />
+              <Fence pos="38950,12700" />
+              <Fence pos="39000,8500" />
+              <Fence pos="46050,8500" />
+            </Section>
+            <Section>
+              <Fence pos="38950,12650" />
+              <Fence pos="30550,12700" />
+              <Fence pos="30550,8450" />
+              <Fence pos="38950,8450" />
+            </Section>
+            <Section>
+              <Fence pos="35450,12700" />
+              <Fence pos="35500,18950" />
+              <Fence pos="30500,19000" />
+              <Fence pos="30600,12700" />
+            </Section>
+            <Section>
+              <Fence pos="42550,12750" />
+              <Fence pos="42550,19000" />
+              <Fence pos="35500,18950" />
+              <Fence pos="35500,12600" />
+            </Section>
+            <Section>
+              <Fence pos="42550,12750" />
+              <Fence pos="46100,12650" />
+              <Fence pos="46050,19050" />
+              <Fence pos="42450,19100" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="46000,19050" />
+              <Fence pos="30450,18950" />
+              <Fence pos="30600,29400" />
+              <Fence pos="46200,29500" />
+            </Bounds>
+            <Section>
+              <Fence pos="30450,18950" />
+              <Fence pos="38950,19050" />
+              <Fence pos="38950,25250" />
+              <Fence pos="30450,25200" />
+            </Section>
+            <Section>
+              <Fence pos="39000,19050" />
+              <Fence pos="46050,19000" />
+              <Fence pos="46150,25300" />
+              <Fence pos="38950,25200" />
+            </Section>
+            <Section>
+              <Fence pos="46150,29550" />
+              <Fence pos="46200,25350" />
+              <Fence pos="30450,25250" />
+              <Fence pos="30500,29400" />
+            </Section>
+          </Area_2>
+        </Area_1>
+        <Area_1 name="FEY_FOREST">
+          <Bounds>
+            <Fence pos="76600,-29950" />
+            <Fence pos="121850,-29700" />
+            <Fence pos="122000,400" />
+            <Fence pos="76750,50" />
+          </Bounds>
+
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="102900,-30100" />
+              <Fence pos="102950,-14750" />
+              <Fence pos="122100,-14600" />
+              <Fence pos="121800,-29650" />
+            </Bounds>
+            <Section>
+              <Fence pos="102850,-30100" />
+              <Fence pos="110050,-29950" />
+              <Fence pos="110050,-23100" />
+              <Fence pos="102900,-23050" />
+            </Section>
+            <Section>
+              <Fence pos="110050,-30000" />
+              <Fence pos="117100,-29750" />
+              <Fence pos="117150,-23050" />
+              <Fence pos="110050,-23050" />
+            </Section>
+            <Section>
+              <Fence pos="117200,-29750" />
+              <Fence pos="121850,-29800" />
+              <Fence pos="121800,-23150" />
+              <Fence pos="117150,-23100" />
+            </Section>
+            <Section>
+              <Fence pos="121850,-23000" />
+              <Fence pos="122100,-14650" />
+              <Fence pos="117150,-14600" />
+              <Fence pos="117150,-23050" />
+            </Section>
+            <Section>
+              <Fence pos="110050,-23050" />
+              <Fence pos="117150,-23100" />
+              <Fence pos="117050,-14650" />
+              <Fence pos="110050,-14650" />
+            </Section>
+            <Section>
+              <Fence pos="110000,-23050" />
+              <Fence pos="110000,-14750" />
+              <Fence pos="102950,-14750" />
+              <Fence pos="102900,-23100" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="103000,-14700" />
+              <Fence pos="122000,-14650" />
+              <Fence pos="122150,-8400" />
+              <Fence pos="102900,-8350" />
+            </Bounds>
+            <Section>
+              <Fence pos="102900,-14700" />
+              <Fence pos="109900,-14600" />
+              <Fence pos="109950,-8450" />
+              <Fence pos="102900,-8400" />
+            </Section>
+            <Section>
+              <Fence pos="109950,-14700" />
+              <Fence pos="117050,-14700" />
+              <Fence pos="117200,-8300" />
+              <Fence pos="109900,-8350" />
+            </Section>
+            <Section>
+              <Fence pos="117050,-14750" />
+              <Fence pos="122000,-14550" />
+              <Fence pos="122100,-8350" />
+              <Fence pos="117150,-8350" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="102900,-8350" />
+              <Fence pos="102950,700" />
+              <Fence pos="122050,400" />
+              <Fence pos="122000,-8300" />
+            </Bounds>
+            <Section>
+              <Fence pos="102850,-8350" />
+              <Fence pos="109950,-8300" />
+              <Fence pos="110100,-4200" />
+              <Fence pos="102900,-4250" />
+            </Section>
+            <Section>
+              <Fence pos="109950,-8350" />
+              <Fence pos="117150,-8300" />
+              <Fence pos="117050,-4150" />
+              <Fence pos="110050,-4200" />
+            </Section>
+            <Section>
+              <Fence pos="117150,-8300" />
+              <Fence pos="122100,-8350" />
+              <Fence pos="122100,-4150" />
+              <Fence pos="116900,-4050" />
+            </Section>
+            <Section>
+              <Fence pos="102900,-4150" />
+              <Fence pos="109950,-4200" />
+              <Fence pos="109950,800" />
+              <Fence pos="102950,750" />
+            </Section>
+            <Section>
+              <Fence pos="109900,-4150" />
+              <Fence pos="116850,-4150" />
+              <Fence pos="117200,450" />
+              <Fence pos="109950,700" />
+            </Section>
+            <Section>
+              <Fence pos="116850,-4000" />
+              <Fence pos="122000,-4100" />
+              <Fence pos="122000,400" />
+              <Fence pos="117150,500" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="102800,-30000" />
+              <Fence pos="102950,-14750" />
+              <Fence pos="76700,-14700" />
+              <Fence pos="76750,-29950" />
+            </Bounds>
+            <Section>
+              <Fence pos="76700,-29950" />
+              <Fence pos="85200,-29950" />
+              <Fence pos="85100,-25100" />
+              <Fence pos="76650,-25200" />
+            </Section>
+            <Section>
+              <Fence pos="85150,-29950" />
+              <Fence pos="92150,-29950" />
+              <Fence pos="92250,-25200" />
+              <Fence pos="85150,-25200" />
+            </Section>
+            <Section>
+              <Fence pos="92200,-29850" />
+              <Fence pos="97500,-30000" />
+              <Fence pos="97700,-25150" />
+              <Fence pos="92300,-25150" />
+            </Section>
+            <Section>
+              <Fence pos="97450,-30000" />
+              <Fence pos="102800,-30050" />
+              <Fence pos="102800,-25150" />
+              <Fence pos="97800,-25200" />
+            </Section>
+            <Section>
+              <Fence pos="102700,-25100" />
+              <Fence pos="102850,-20950" />
+              <Fence pos="92250,-21000" />
+              <Fence pos="92250,-25150" />
+            </Section>
+            <Section>
+              <Fence pos="92250,-21050" />
+              <Fence pos="85150,-20950" />
+              <Fence pos="85150,-25150" />
+              <Fence pos="92200,-25150" />
+            </Section>
+            <Section>
+              <Fence pos="85150,-25200" />
+              <Fence pos="85200,-20900" />
+              <Fence pos="76700,-20950" />
+              <Fence pos="76650,-25200" />
+            </Section>
+            <Section>
+              <Fence pos="76600,-20900" />
+              <Fence pos="81650,-20850" />
+              <Fence pos="81600,-14650" />
+              <Fence pos="76750,-14700" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="102750,-14700" />
+              <Fence pos="102800,-10300" />
+              <Fence pos="85250,-10500" />
+              <Fence pos="85200,-14650" />
+            </Bounds>
+            <Section>
+              <Fence pos="85200,-14650" />
+              <Fence pos="92300,-14700" />
+              <Fence pos="92250,-10450" />
+              <Fence pos="85250,-10450" />
+            </Section>
+            <Section>
+              <Fence pos="92350,-14600" />
+              <Fence pos="97800,-14700" />
+              <Fence pos="97650,-10400" />
+              <Fence pos="92200,-10400" />
+            </Section>
+            <Section>
+              <Fence pos="97800,-14700" />
+              <Fence pos="102750,-14700" />
+              <Fence pos="102750,-10250" />
+              <Fence pos="97650,-10350" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="85000,-14650" />
+              <Fence pos="85000,-50" />
+              <Fence pos="76800,0" />
+              <Fence pos="76700,-14750" />
+            </Bounds>
+            <Section>
+              <Fence pos="76650,-14700" />
+              <Fence pos="85100,-14600" />
+              <Fence pos="85100,-9450" />
+              <Fence pos="76600,-9400" />
+            </Section>
+            <Section>
+              <Fence pos="85100,-9450" />
+              <Fence pos="84950,-4150" />
+              <Fence pos="76650,-4100" />
+              <Fence pos="76600,-9400" />
+            </Section>
+            <Section>
+              <Fence pos="84950,-4150" />
+              <Fence pos="85000,-100" />
+              <Fence pos="76750,50" />
+              <Fence pos="76700,-4100" />
+            </Section>
+          </Area_2>
+        </Area_1>
+        <Area_1 name="OBLIVION_WOODS">
+          <Bounds>
+            <Fence pos="91900,150" />
+            <Fence pos="122750,500" />
+            <Fence pos="122900,31600" />
+            <Fence pos="92250,31700" />
+          </Bounds>
+          <Area_1 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="99250,12500" />
+              <Fence pos="99350,22250" />
+              <Fence pos="92150,22400" />
+              <Fence pos="92000,12550" />
+            </Bounds>
+            <Section>
+              <Fence pos="99250,16800" />
+              <Fence pos="99250,12500" />
+              <Fence pos="92000,12600" />
+              <Fence pos="92000,16800" />
+            </Section>
+            <Section>
+              <Fence pos="99250,16800" />
+              <Fence pos="99350,22300" />
+              <Fence pos="92100,22400" />
+              <Fence pos="92000,16900" />
+            </Section>
+          </Area_1>
+          <Area_1 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="92100,12500" />
+              <Fence pos="99250,12550" />
+              <Fence pos="99350,200" />
+              <Fence pos="92050,200" />
+            </Bounds>
+            <Section>
+              <Fence pos="92050,250" />
+              <Fence pos="99250,200" />
+              <Fence pos="99200,6250" />
+              <Fence pos="92100,6300" />
+            </Section>
+            <Section>
+              <Fence pos="99250,6300" />
+              <Fence pos="99300,12550" />
+              <Fence pos="92100,12550" />
+              <Fence pos="92050,6300" />
+            </Section>
+            <Section>
+              <Fence pos="99350,300" />
+              <Fence pos="107850,500" />
+              <Fence pos="107850,14700" />
+              <Fence pos="99350,14750" />
+            </Section>
+            <Section>
+              <Fence pos="99350,350" />
+              <Fence pos="107700,450" />
+              <Fence pos="107800,7750" />
+              <Fence pos="99250,8000" />
+            </Section>
+            <Section>
+              <Fence pos="107750,7800" />
+              <Fence pos="107800,14700" />
+              <Fence pos="99200,14750" />
+              <Fence pos="99250,8150" />
+            </Section>
+          </Area_1>
+          <Area_1 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="107750,700" />
+              <Fence pos="122800,450" />
+              <Fence pos="122800,12550" />
+              <Fence pos="107750,12550" />
+            </Bounds>
+            <Section>
+              <Fence pos="107750,650" />
+              <Fence pos="115050,550" />
+              <Fence pos="115450,6300" />
+              <Fence pos="107650,6400" />
+            </Section>
+            <Section>
+              <Fence pos="115000,550" />
+              <Fence pos="122750,500" />
+              <Fence pos="122850,6300" />
+              <Fence pos="115500,6300" />
+            </Section>
+            <Section>
+              <Fence pos="107750,9750" />
+              <Fence pos="113600,9850" />
+              <Fence pos="113650,6500" />
+              <Fence pos="107700,6500" />
+            </Section>
+            <Section>
+              <Fence pos="113550,9950" />
+              <Fence pos="122800,10000" />
+              <Fence pos="122800,6300" />
+              <Fence pos="113550,6400" />
+            </Section>
+            <Section>
+              <Fence pos="122700,9950" />
+              <Fence pos="122800,12550" />
+              <Fence pos="107650,12500" />
+              <Fence pos="107650,9800" />
+            </Section>
+            <Section>
+              <Fence pos="107750,12550" />
+              <Fence pos="107650,23150" />
+              <Fence pos="122950,23100" />
+              <Fence pos="122800,12650" />
+            </Section>
+            <Section>
+              <Fence pos="113650,12600" />
+              <Fence pos="113650,16850" />
+              <Fence pos="107750,16900" />
+              <Fence pos="107800,12650" />
+            </Section>
+            <Section>
+              <Fence pos="113650,16950" />
+              <Fence pos="122750,16900" />
+              <Fence pos="122700,12700" />
+              <Fence pos="113550,12600" />
+            </Section>
+          </Area_1>
+          <Area_1 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="99350,23100" />
+              <Fence pos="107450,23100" />
+              <Fence pos="107750,14700" />
+              <Fence pos="99250,14850" />
+            </Bounds>
+            <Section>
+              <Fence pos="99350,14950" />
+              <Fence pos="107600,14750" />
+              <Fence pos="107600,19000" />
+              <Fence pos="99300,19000" />
+            </Section>
+            <Section>
+              <Fence pos="107500,18950" />
+              <Fence pos="107450,23100" />
+              <Fence pos="99400,23050" />
+              <Fence pos="99300,19050" />
+            </Section>
+          </Area_1>
+          <Area_1 isSameAsParent="True">
+            <Bounds>
+              <Fence pos="99300,22350" />
+              <Fence pos="99350,31500" />
+              <Fence pos="92300,31600" />
+              <Fence pos="92150,22500" />
+            </Bounds>
+            <Section>
+              <Fence pos="99300,22350" />
+              <Fence pos="99350,31500" />
+              <Fence pos="92300,31600" />
+              <Fence pos="92150,22500" />
+            </Section>
+          </Area_1>
+          <Area_1 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="122900,23150" />
+              <Fence pos="122850,31500" />
+              <Fence pos="99350,31550" />
+              <Fence pos="99400,23050" />
+            </Bounds>
+            <Section>
+              <Fence pos="99300,23050" />
+              <Fence pos="105250,23100" />
+              <Fence pos="105350,31550" />
+              <Fence pos="99400,31550" />
+            </Section>
+            <Section>
+              <Fence pos="105200,23200" />
+              <Fence pos="110750,23100" />
+              <Fence pos="111150,31550" />
+              <Fence pos="105300,31550" />
+            </Section>
+            <Section>
+              <Fence pos="110700,23150" />
+              <Fence pos="115250,23150" />
+              <Fence pos="116200,31450" />
+              <Fence pos="111200,31600" />
+            </Section>
+            <Section>
+              <Fence pos="115200,23150" />
+              <Fence pos="122900,23150" />
+              <Fence pos="122950,31550" />
+              <Fence pos="116200,31550" />
+            </Section>
+          </Area_1>
+        </Area_1>
+        <Area_1 name="TUWANGI_MIRE">
+          <Bounds>
+            <Fence pos="76500,-15250" />
+            <Fence pos="76500,-1150" />
+            <Fence pos="67300,-2150" />
+            <Fence pos="46000,450" />
+            <Fence pos="46000,-15200" />
+          </Bounds>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="76550,-15250" />
+              <Fence pos="76550,-1300" />
+              <Fence pos="67400,-2150" />
+              <Fence pos="67600,-15300" />
+            </Bounds>
+            <Section>
+              <Fence pos="67550,-15300" />
+              <Fence pos="76400,-15100" />
+              <Fence pos="76650,-10500" />
+              <Fence pos="67550,-10500" />
+            </Section>
+            <Section>
+              <Fence pos="76550,-10550" />
+              <Fence pos="76650,-6300" />
+              <Fence pos="67500,-6300" />
+              <Fence pos="67550,-10500" />
+            </Section>
+            <Section>
+              <Fence pos="76600,-6150" />
+              <Fence pos="76550,-1200" />
+              <Fence pos="67450,-2100" />
+              <Fence pos="67450,-6250" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="67450,-15300" />
+              <Fence pos="67350,-2100" />
+              <Fence pos="60350,-1300" />
+              <Fence pos="60250,-15250" />
+            </Bounds>
+            <Section>
+              <Fence pos="67400,-7150" />
+              <Fence pos="60300,-7200" />
+              <Fence pos="60250,-15200" />
+              <Fence pos="67500,-15150" />
+            </Section>
+            <Section>
+              <Fence pos="67450,-7150" />
+              <Fence pos="67250,-2150" />
+              <Fence pos="60450,-1300" />
+              <Fence pos="60300,-7150" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="46000,-8400" />
+              <Fence pos="60250,-8400" />
+              <Fence pos="60350,-1300" />
+              <Fence pos="46150,300" />
+            </Bounds>
+            <Section>
+              <Fence pos="46000,-8450" />
+              <Fence pos="49650,-8350" />
+              <Fence pos="49600,-100" />
+              <Fence pos="46100,400" />
+            </Section>
+            <Section>
+              <Fence pos="49700,-8300" />
+              <Fence pos="56750,-8350" />
+              <Fence pos="56700,-950" />
+              <Fence pos="49600,0" />
+            </Section>
+            <Section>
+              <Fence pos="56800,-8300" />
+              <Fence pos="60200,-8450" />
+              <Fence pos="60300,-1350" />
+              <Fence pos="56600,-850" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="60200,-15200" />
+              <Fence pos="60250,-8350" />
+              <Fence pos="45950,-8500" />
+              <Fence pos="46050,-15250" />
+            </Bounds>
+            <Section>
+              <Fence pos="60150,-15250" />
+              <Fence pos="60200,-8300" />
+              <Fence pos="53150,-8350" />
+              <Fence pos="53250,-15250" />
+            </Section>
+            <Section>
+              <Fence pos="53150,-15250" />
+              <Fence pos="53100,-8300" />
+              <Fence pos="45900,-8450" />
+              <Fence pos="46050,-15300" />
+            </Section>
+          </Area_2>
+        </Area_1>
+        <Area_1 name="VALLEY_OF_TITANS">
+          <Bounds>
+            <Fence pos="91900,150" />
+            <Fence pos="122750,500" />
+            <Fence pos="122900,31600" />
+            <Fence pos="92250,31700" />
+          </Bounds>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="99250,12500" />
+              <Fence pos="99350,22250" />
+              <Fence pos="92150,22400" />
+              <Fence pos="92000,12550" />
+            </Bounds>
+            <Section>
+              <Fence pos="99250,16800" />
+              <Fence pos="99250,12500" />
+              <Fence pos="92000,12600" />
+              <Fence pos="92000,16800" />
+            </Section>
+            <Section>
+              <Fence pos="99250,16800" />
+              <Fence pos="99350,22300" />
+              <Fence pos="92100,22400" />
+              <Fence pos="92000,16900" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="92100,12500" />
+              <Fence pos="99250,12550" />
+              <Fence pos="99350,200" />
+              <Fence pos="92050,200" />
+            </Bounds>
+            <Section>
+              <Fence pos="92050,250" />
+              <Fence pos="99250,200" />
+              <Fence pos="99200,6250" />
+              <Fence pos="92100,6300" />
+            </Section>
+            <Section>
+              <Fence pos="99250,6300" />
+              <Fence pos="99300,12550" />
+              <Fence pos="92100,12550" />
+              <Fence pos="92050,6300" />
+            </Section>
+            <Section>
+              <Fence pos="99350,300" />
+              <Fence pos="107850,500" />
+              <Fence pos="107850,14700" />
+              <Fence pos="99350,14750" />
+            </Section>
+            <Section>
+              <Fence pos="99350,350" />
+              <Fence pos="107700,450" />
+              <Fence pos="107800,7750" />
+              <Fence pos="99250,8000" />
+            </Section>
+            <Section>
+              <Fence pos="107750,7800" />
+              <Fence pos="107800,14700" />
+              <Fence pos="99200,14750" />
+              <Fence pos="99250,8150" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="107750,700" />
+              <Fence pos="122800,450" />
+              <Fence pos="122800,12550" />
+              <Fence pos="107750,12550" />
+            </Bounds>
+            <Section>
+              <Fence pos="107750,650" />
+              <Fence pos="115050,550" />
+              <Fence pos="115450,6300" />
+              <Fence pos="107650,6400" />
+            </Section>
+            <Section>
+              <Fence pos="115000,550" />
+              <Fence pos="122750,500" />
+              <Fence pos="122850,6300" />
+              <Fence pos="115500,6300" />
+            </Section>
+            <Section>
+              <Fence pos="107750,9750" />
+              <Fence pos="113600,9850" />
+              <Fence pos="113650,6500" />
+              <Fence pos="107700,6500" />
+            </Section>
+            <Section>
+              <Fence pos="113550,9950" />
+              <Fence pos="122800,10000" />
+              <Fence pos="122800,6300" />
+              <Fence pos="113550,6400" />
+            </Section>
+            <Section>
+              <Fence pos="122700,9950" />
+              <Fence pos="122800,12550" />
+              <Fence pos="107650,12500" />
+              <Fence pos="107650,9800" />
+            </Section>
+            <Section>
+              <Fence pos="107750,12550" />
+              <Fence pos="107650,23150" />
+              <Fence pos="122950,23100" />
+              <Fence pos="122800,12650" />
+            </Section>
+            <Section>
+              <Fence pos="113650,12600" />
+              <Fence pos="113650,16850" />
+              <Fence pos="107750,16900" />
+              <Fence pos="107800,12650" />
+            </Section>
+            <Section>
+              <Fence pos="113650,16950" />
+              <Fence pos="122750,16900" />
+              <Fence pos="122700,12700" />
+              <Fence pos="113550,12600" />
+            </Section>
+            <Section>
+              <Fence pos="122750,16900" />
+              <Fence pos="122900,23050" />
+              <Fence pos="117200,23100" />
+              <Fence pos="117100,17100" />
+            </Section>
+            <Section>
+              <Fence pos="117000,17000" />
+              <Fence pos="117200,23150" />
+              <Fence pos="112400,23100" />
+              <Fence pos="112350,16850" />
+            </Section>
+            <Section>
+              <Fence pos="112300,23150" />
+              <Fence pos="112350,16800" />
+              <Fence pos="107700,16800" />
+              <Fence pos="107550,23100" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="99350,23100" />
+              <Fence pos="107450,23100" />
+              <Fence pos="107750,14700" />
+              <Fence pos="99250,14850" />
+            </Bounds>
+            <Section>
+              <Fence pos="99350,14950" />
+              <Fence pos="107600,14750" />
+              <Fence pos="107600,19000" />
+              <Fence pos="99300,19000" />
+            </Section>
+            <Section>
+              <Fence pos="107500,18950" />
+              <Fence pos="107450,23100" />
+              <Fence pos="99400,23050" />
+              <Fence pos="99300,19050" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="99300,22350" />
+              <Fence pos="99350,31500" />
+              <Fence pos="92300,31600" />
+              <Fence pos="92150,22500" />
+            </Bounds>
+            <Section>
+              <Fence pos="99300,22350" />
+              <Fence pos="99350,31500" />
+              <Fence pos="92300,31600" />
+              <Fence pos="92150,22500" />
+            </Section>
+          </Area_2>
+          <Area_2 isSameAsParent="False">
+            <Bounds>
+              <Fence pos="122900,23150" />
+              <Fence pos="122850,31500" />
+              <Fence pos="99350,31550" />
+              <Fence pos="99400,23050" />
+            </Bounds>
+            <Section>
+              <Fence pos="99300,23050" />
+              <Fence pos="105250,23100" />
+              <Fence pos="105350,31550" />
+              <Fence pos="99400,31550" />
+            </Section>
+            <Section>
+              <Fence pos="105200,23200" />
+              <Fence pos="110750,23100" />
+              <Fence pos="111150,31550" />
+              <Fence pos="105300,31550" />
+            </Section>
+            <Section>
+              <Fence pos="110700,23150" />
+              <Fence pos="115250,23150" />
+              <Fence pos="116200,31450" />
+              <Fence pos="111200,31600" />
+            </Section>
+            <Section>
+              <Fence pos="115200,23150" />
+              <Fence pos="122900,23150" />
+              <Fence pos="122950,31550" />
+              <Fence pos="116200,31550" />
+            </Section>
+          </Area_2>
+        </Area_1>
+      </Area>
+    </Continent>
+    <Continent id="2" zoneCount="2" identity="13" name="ISLAND_OF_DOWN" channels="1">
+    </Continent>
+    <Continent id="4" zoneCount="2" identity="7031" name="NORTH_ARUN" channels="1">
+    </Continent>
+
+    <Continent id="5" zoneCount="2" identity="2;7011;7012;7013;7014;7015" name="SHOUTH_SHARA" channels="1" >
+    </Continent>
+
+    <Continent id="6" zoneCount="2" identity="3;7021;7022;7023" name="NORTH_SHARA" channels="1">
+    </Continent>
+
+    <Continent id="7" zoneCount="2" identity="8001" name="NORTH_SHARA_EXTREME" channels="1">
+    </Continent>
+  </TODO>
+</World>
