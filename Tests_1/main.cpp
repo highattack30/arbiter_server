@@ -8,14 +8,16 @@
 #include "win32.h"
 #include "logService.h"
 #include "arbiter_server.h"
-#include "world_server.h"
+//#include "world_server.h"
 #include "OpCodes.h"
 #include "config.h"
 #include "dataservice.h"
 #include "chat.h"
 #include "entity_manager.h"
-#include "active_server.h"
 #include "skylake_stats.h"
+#include "w_node_opcodes.h"
+#include "world_server_handler.h"
+#include "internalOp.h"
 
 void release();
 
@@ -25,8 +27,11 @@ int main(int32 argc, char** argv)
 
 	std::string cmdLine;
 
-	if (!init_config(".//data//config.ini"))
+	if (!init_config(".//data//config.slc"))
 		goto error_proc;
+
+	w_op_fn_init();
+	io_init();
 
 	if (config::server.buffer_edit_enable)
 	{
@@ -50,13 +55,15 @@ int main(int32 argc, char** argv)
 
 	printf("::LOADED_STATS_SCRIPTS!\n\n");
 
-	entity_manager::init();
+	
 
-	if (!active_server_init())
-	{
-		LOG("\nActive_server init failed!");
-		goto error_proc;
-	}
+	//entity_manager::init();
+
+	//if (!active_server_init())
+	//{
+	//	LOG("\nActive_server init failed!");
+	//	goto error_proc;
+	//}
 
 	if (!chat_init())
 	{
@@ -76,11 +83,11 @@ int main(int32 argc, char** argv)
 		goto error_proc;
 	}
 
-	if (!world_server_init())
-	{
-		LOG("\nWORLD_SERVER_INIT FAILED!");
-		goto error_proc;
-	}
+	//if (!world_server_init())
+	//{
+	//	LOG("\nWORLD_SERVER_INIT FAILED!");
+	//	goto error_proc;
+	//}
 
 	if (!data_service::data_init())
 	{
@@ -94,6 +101,10 @@ int main(int32 argc, char** argv)
 		goto error_proc;
 	}
 
+	if (!w_server_handler_init()) {
+		printf("WORLD_HANDLER_INIT_FAILED!\n");
+		goto error_proc;
+	}
 
 #pragma region cmdLine
 
@@ -139,12 +150,12 @@ void release()
 {
 	chat_release();
 	data_service::data_release();
-	world_server_release();
+	//world_server_release();
 	arbiter_server_release();
-	active_server_release();
+	//active_server_release();
 	opcode_release();
 	mysql_release();
+	w_server_handler_release();
 
-
-	entity_manager::release();
+	//entity_manager::release();
 }

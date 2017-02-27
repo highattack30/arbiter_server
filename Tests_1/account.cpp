@@ -46,8 +46,8 @@ bool account_perform_login(std::shared_ptr<connection> c, sql::Connection * conn
 	{
 		try
 		{
-			c->_account.isGm = rs->getBoolean("isGm");
-			c->_account.id = rs->getInt("id");
+			c->account.isGm = rs->getBoolean("isGm");
+			c->account.id = rs->getInt("id");
 		}
 		catch (sql::SQLException & e)
 		{
@@ -58,8 +58,8 @@ bool account_perform_login(std::shared_ptr<connection> c, sql::Connection * conn
 			return false;
 		}
 
-		memcpy(c->_account.username, username_cstr, 32);
-		memcpy(c->_account.password, ticket, 33);
+		memcpy(c->account.username, username_cstr, 32);
+		memcpy(c->account.password, ticket, 33);
 
 		delete rs;
 		rs = NULL;
@@ -91,8 +91,7 @@ bool account_perform_login(std::shared_ptr<connection> c, sql::Connection * conn
 		{
 			if (rs && rs->next())
 			{
-				std::shared_ptr<player> newPlayer = entity_manager::create_player(c, rs->getInt(1));
-				newPlayer->spawn.init(newPlayer);
+				std::shared_ptr<player> newPlayer = std::make_shared<player>(c->id, rs->getInt(1), c);
 
 				std::string name = rs->getString("name").c_str();
 				size_t nameLen = strlen(name.c_str());
@@ -111,20 +110,20 @@ bool account_perform_login(std::shared_ptr<connection> c, sql::Connection * conn
 
 				newPlayer->level = (uint16)rs->getInt("level");
 
-				newPlayer->position.x.store((float)rs->getDouble("x"));
-				newPlayer->position.y.store((float)rs->getDouble("y"));
-				newPlayer->position.z.store((float)rs->getDouble("z"));
-				newPlayer->position.heading = (int16)rs->getInt("h");
+				a_store(newPlayer->x, (float)rs->getDouble("x"));
+				a_store(newPlayer->y, (float)rs->getDouble("y"));
+				a_store(newPlayer->z, (float)rs->getDouble("z"));
+				a_store(newPlayer->w, (int16)rs->getInt("h"));
 
 				newPlayer->pRace = (e_player_race)rs->getInt("race");
 				newPlayer->pGender = (e_player_gender)rs->getInt("gender");
 				newPlayer->pClass = (e_player_class)rs->getInt("class");
 
-				newPlayer->position.channel = (uint32)rs->getInt(25);
-				newPlayer->position.continent_id = (uint32)rs->getInt("areaId");
-				newPlayer->position.worldMapGuardId = (uint32)rs->getInt(22);
-				newPlayer->position.worldMapWorldId = (uint32)rs->getInt(23);
-				newPlayer->position.worldMapSectionId = (uint32)rs->getInt(24);
+				//newPlayer->position.channel = (uint32)rs->getInt(25);
+				newPlayer->continent_id = (uint32)rs->getInt("continent");
+				//newPlayer->position.worldMapGuardId = (uint32)rs->getInt(22);
+				//newPlayer->position.worldMapWorldId = (uint32)rs->getInt(23);
+				//newPlayer->position.worldMapSectionId = (uint32)rs->getInt(24);
 
 				std::istream * blob = rs->getBlob("details1");
 				if (blob)
@@ -146,12 +145,13 @@ bool account_perform_login(std::shared_ptr<connection> c, sql::Connection * conn
 					blob->read((char*)newPlayer->details3, SC_PLAYER_DETAILS_3_BUFFER_SIZE);
 					delete blob;
 				}
+				newPlayer->area_id = (uint32)rs->getInt("area");
 
 				//visited sections
 
 #pragma region inventory
 				p = conn->prepareStatement("SELECT * FROM player_inventory WHERE username=? AND name=?");
-				p->setString(1, c->_account.username);
+				p->setString(1, c->account.username);
 				p->setString(2, newPlayer->name);
 				sql::ResultSet *rs2 = NULL;
 				try
@@ -278,7 +278,7 @@ bool account_perform_login(std::shared_ptr<connection> c, sql::Connection * conn
 
 				s_stats_init_player(newPlayer);
 				newPlayer->c_manager.init(newPlayer);
-				c->_players[i] = newPlayer;
+				c->players[i] = newPlayer;
 			}
 			else
 				break;
@@ -304,7 +304,7 @@ void WINAPI account_load_client_settings(std::shared_ptr<connection> p, sql::Con
 	try
 	{
 		sql::PreparedStatement *p_s = con->prepareStatement("SELECT * FROM accounts WHERE username=?");
-		p_s->setString(1, p->_account.username);
+		p_s->setString(1, p->account.username);
 
 		sql::ResultSet* r_s = p_s->executeQuery();
 		delete p_s;

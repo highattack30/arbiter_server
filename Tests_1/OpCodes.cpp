@@ -7,7 +7,6 @@
 #include "servertime.h"
 #include "Stream.h"
 #include "arbiter_server.h"
-#include "world_server.h"
 #include "itemEnums.h"
 #include "servertime.h"
 #include "job.h"
@@ -25,10 +24,9 @@
 #include "chat.h"
 #include "itemtemplate.h"
 #include "passivitytemplate.h"
-
+#include "world_server_handler.h"
 
 #include <inttypes.h>
-#include "active_server.h"
 #include "skylake_stats.h"
 #include "bind_contract.h"
 #include "enchant_contract.h"
@@ -142,7 +140,7 @@ bool WINAPI op_login_arbiter(std::shared_ptr<connection> c, void* argv[])
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 
-	Stream * stream = &c->_recvBuffer.data;
+	Stream * stream = &c->recvBuffer.data;
 
 	uint16 nameOffset = stream->ReadInt16();
 	uint16 ticketOffset = stream->ReadInt16();
@@ -166,7 +164,7 @@ bool WINAPI op_login_arbiter(std::shared_ptr<connection> c, void* argv[])
 	if (!result)
 	{
 		printf("AUTH BAD\n");
-		arbiter_server_connexion_remove(c->_id);
+		arbiter_server_connexion_remove(c->id);
 		return false;
 	}
 
@@ -243,7 +241,7 @@ bool WINAPI op_get_user_list(std::shared_ptr<connection> c, void* argv[])
 #ifdef OP_DUMP
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
-	Stream &stream = c->_recvBuffer.data;
+	Stream &stream = c->recvBuffer.data;
 	stream.Clear();
 	stream.Resize(35);
 	stream.WriteInt16(0);
@@ -278,7 +276,7 @@ bool WINAPI op_get_user_list(std::shared_ptr<connection> c, void* argv[])
 	uint16 count = 0;
 	for (uint32 i = 0; i < SC_PLAYER_MAX_CHARACTER_COUNT; i++)
 	{
-		std::shared_ptr<player> p = c->_players[i];
+		std::shared_ptr<player> p = c->players[i];
 		if (!p) continue;
 
 		try
@@ -360,7 +358,7 @@ bool WINAPI op_get_user_list(std::shared_ptr<connection> c, void* argv[])
 
 		stream.Write(p->details3, SC_PLAYER_DETAILS_3_BUFFER_SIZE);
 
-		stream.WriteUInt8(c->_account.isGm ? 0x01 : 0x00);//isgm
+		stream.WriteUInt8(c->account.isGm ? 0x01 : 0x00);//isgm
 
 		stream.WriteInt64(0);
 		stream.WriteInt32(0); //4
@@ -430,7 +428,7 @@ bool WINAPI op_get_user_list(std::shared_ptr<connection> c, void* argv[])
 	try
 	{
 		sql::PreparedStatement *s = ((sql::Connection*)argv[0])->prepareStatement("SELECT accountSettings FROM accounts WHERE username=?");
-		s->setString(1, c->_account.username);
+		s->setString(1, c->account.username);
 		sql::ResultSet * rs = s->executeQuery();
 		if (rs && rs->next())
 		{
@@ -649,9 +647,9 @@ bool WINAPI op_create_player(std::shared_ptr<connection> c, void* argv[])
 	uint8 index = 0;
 	if ((index = connection_can_create_player(c)) >= 0)
 	{
-		std::shared_ptr<player> p = c->_players[index] = entity_manager::create_player(c, 0);
-		p->spawn.init(p);
-		Stream * stream = &c->_recvBuffer.data;
+		std::shared_ptr<player> p = c->players[index] = std::make_shared<player>(c->id, 0, c);
+
+		Stream * stream = &c->recvBuffer.data;
 
 		uint16 nameOffset = stream->ReadInt16();
 		uint16 details1Offset = stream->ReadInt16();
@@ -683,16 +681,17 @@ bool WINAPI op_create_player(std::shared_ptr<connection> c, void* argv[])
 		p->pGender = (e_player_gender)pGender;
 		p->pRace = (e_player_race)pRace;
 		p->level = pClass == REAPER ? 40 : 1;
-
-		p->position.continent_id = config::zone.zone_start_continent;
-		p->position.channel = config::zone.zone_start_channel - 1;
-		p->position.x.store(config::zone.zone_start_position[0]);
-		p->position.y.store(config::zone.zone_start_position[1]);
-		p->position.z.store(config::zone.zone_start_position[2]);
-		p->position.heading = config::zone.zone_start_heading;
-		p->position.worldMapGuardId = config::zone.zone_start_world_map_guard_id;
-		p->position.worldMapSectionId = config::zone.zone_start_world_map_section_id;
-		p->position.worldMapWorldId = config::zone.zone_start_world_map_wrold_id;
+		p->area_id = 1;
+		p->continent_id = 5;
+		//p->position.continent_id = config::zone.zone_start_continent;
+		//p->position.channel = config::zone.zone_start_channel - 1;
+		p->x.store(config::zone.zone_start_position[0]);
+		p->y.store(config::zone.zone_start_position[1]);
+		p->z.store(config::zone.zone_start_position[2]);
+		p->w = config::zone.zone_start_heading;
+		//p->position.worldMapGuardId = config::zone.zone_start_world_map_guard_id;
+		//p->position.worldMapSectionId = config::zone.zone_start_world_map_section_id;
+		//p->position.worldMapWorldId = config::zone.zone_start_world_map_wrold_id;
 
 		inventory_init(p, (uint16)config::player.start_inventory_slot_count);
 		inventory_new(p);
@@ -722,9 +721,9 @@ bool WINAPI op_create_player(std::shared_ptr<connection> c, void* argv[])
 			sql::PreparedStatement * s = nullptr;
 			try
 			{
-				s = con->prepareStatement("INSERT INTO players(username,name,x,y,z,h,race,gender,class,exp,restedExp,areaId,level,details1,details2,details3,lastOnlineUTC,creationTimeUTC,banTimeUTC,visitedSections,worldMapGuardId,worldMapWorldId,worldMapSectionId,channel) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				s = con->prepareStatement("INSERT INTO players(username,name,x,y,z,h,race,gender,class,exp,restedExp,continent,level,details1,details2,details3,lastOnlineUTC,creationTimeUTC,banTimeUTC,visitedSections,worldMapGuardId,worldMapWorldId,worldMapSectionId,area) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
-				s->setString(1, c->_account.username);
+				s->setString(1, c->account.username);
 				s->setString(2, p->name);
 
 				s->setDouble(3, config::zone.zone_start_position[0]);
@@ -754,7 +753,7 @@ bool WINAPI op_create_player(std::shared_ptr<connection> c, void* argv[])
 				s->setInt(21, config::zone.zone_start_world_map_guard_id);
 				s->setInt(22, config::zone.zone_start_world_map_wrold_id);
 				s->setInt(23, config::zone.zone_start_world_map_section_id);
-				s->setInt(24, config::zone.zone_start_channel - 1);
+				s->setInt(24, 1);
 
 				result = s->executeUpdate();
 			}
@@ -768,7 +767,7 @@ bool WINAPI op_create_player(std::shared_ptr<connection> c, void* argv[])
 			Stream * inventoryRaw = p->i_.get_raw();
 			std::istringstream invBlob = std::istringstream(std::string((const char*)inventoryRaw->_raw, inventoryRaw->_size));
 			s = con->prepareStatement("INSERT INTO player_inventory(username,name,items,slotCount,gold) VALUES(?,?,?,?,?)");
-			s->setString(1, c->_account.username);
+			s->setString(1, c->account.username);
 			s->setString(2, p->name);
 			s->setBlob(3, &invBlob);
 
@@ -787,7 +786,7 @@ bool WINAPI op_create_player(std::shared_ptr<connection> c, void* argv[])
 			delete s;
 
 			s = con->prepareStatement("INSERT INTO player_settings(username,name,settings) VALUES(?,?,?)");
-			s->setString(1, c->_account.username);
+			s->setString(1, c->account.username);
 			s->setString(2, p->name);
 			s->setNull(3, 0);
 			try
@@ -802,7 +801,7 @@ bool WINAPI op_create_player(std::shared_ptr<connection> c, void* argv[])
 			delete s;
 
 			s = con->prepareStatement("INSERT INTO player_skills(username,name,learnedSkills,skillCount) VALUES(?,?,?,?)");
-			s->setString(1, c->_account.username);
+			s->setString(1, c->account.username);
 			s->setString(2, p->name);
 			s->setNull(3, 0);
 			s->setInt(4, 0);
@@ -819,7 +818,7 @@ bool WINAPI op_create_player(std::shared_ptr<connection> c, void* argv[])
 
 
 			s = con->prepareStatement("INSERT INTO player_bank(username,name,items,slotCount,gold) VALUES(?,?,?,?,?)");
-			s->setString(1, c->_account.username);
+			s->setString(1, c->account.username);
 			s->setString(2, p->name);
 			s->setNull(3, 0);
 			s->setInt(4, 0);
@@ -838,7 +837,7 @@ bool WINAPI op_create_player(std::shared_ptr<connection> c, void* argv[])
 			try
 			{
 				s = con->prepareStatement("SELECT id FROM players WHERE username=? AND name=?");
-				s->setString(1, c->_account.username);
+				s->setString(1, c->account.username);
 				s->setString(2, p->name);
 
 				sql::ResultSet *rs_lid = s->executeQuery();
@@ -859,12 +858,12 @@ bool WINAPI op_create_player(std::shared_ptr<connection> c, void* argv[])
 		return true;
 	}
 
-	c->_recvBuffer.data.Clear();
-	c->_recvBuffer.data.Resize(5);
-	c->_recvBuffer.data.WriteInt16(5);
-	c->_recvBuffer.data.WriteInt16(S_CREATE_USER);
-	c->_recvBuffer.data.WriteUInt8(0);
-	return connection_send(c, &c->_recvBuffer.data);
+	c->recvBuffer.data.Clear();
+	c->recvBuffer.data.Resize(5);
+	c->recvBuffer.data.WriteInt16(5);
+	c->recvBuffer.data.WriteInt16(S_CREATE_USER);
+	c->recvBuffer.data.WriteUInt8(0);
+	return connection_send(c, &c->recvBuffer.data);
 }
 
 bool WINAPI op_change_user_slot_id(std::shared_ptr<connection>, void* argv[])
@@ -882,9 +881,9 @@ bool WINAPI op_check_username(std::shared_ptr<connection>c, void* argv[])
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 
-	int16 name_offset = c->_recvBuffer.data.ReadInt16();
+	int16 name_offset = c->recvBuffer.data.ReadInt16();
 	char name[SC_PLAYER_NAME_MAX_LENGTH];
-	c->_recvBuffer.data.ReadASCIIStringTo((byte*)name, SC_PLAYER_NAME_MAX_LENGTH);
+	c->recvBuffer.data.ReadASCIIStringTo((byte*)name, SC_PLAYER_NAME_MAX_LENGTH);
 
 	int ret = 0;
 	sql::Connection* con = (sql::Connection*)argv[0];
@@ -906,11 +905,11 @@ bool WINAPI op_check_username(std::shared_ptr<connection>c, void* argv[])
 	}
 
 
-	c->_recvBuffer.data.Clear();
-	c->_recvBuffer.data.Resize(5);
-	c->_recvBuffer.data.WriteInt16(5);
-	c->_recvBuffer.data.WriteInt16(S_CHECK_USERNAME);
-	c->_recvBuffer.data.WriteUInt8(ret ? 0 : 1);
+	c->recvBuffer.data.Clear();
+	c->recvBuffer.data.Resize(5);
+	c->recvBuffer.data.WriteInt16(5);
+	c->recvBuffer.data.WriteInt16(S_CHECK_USERNAME);
+	c->recvBuffer.data.WriteUInt8(ret ? 0 : 1);
 	return connection_send(c);
 }
 
@@ -919,12 +918,12 @@ bool WINAPI op_str_evaluate_string(std::shared_ptr<connection>c, void* argv[])
 #ifdef OP_DUMP
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
-	c->_recvBuffer.data._pos += 14;
-	int32 type = c->_recvBuffer.data.ReadInt32();
+	c->recvBuffer.data._pos += 14;
+	int32 type = c->recvBuffer.data.ReadInt32();
 	byte name[38];
-	bool nameGood = c->_recvBuffer.data.ReadASCIIStringTo(name, 38);
+	bool nameGood = c->recvBuffer.data.ReadASCIIStringTo(name, 38);
 
-	Stream& stream = c->_recvBuffer.data;
+	Stream& stream = c->recvBuffer.data;
 	stream.Clear();
 	stream.WriteInt16(0);
 	stream.WriteInt16(S_STR_EVALUATE_LIST);
@@ -947,520 +946,533 @@ bool WINAPI op_select_player(std::shared_ptr<connection> c, void* argv[])
 #ifdef OP_DUMP
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
-	uint32 db_id = c->_recvBuffer.data.ReadInt32();
+	uint32 db_id = c->recvBuffer.data.ReadInt32();
 	bool result = connection_select_player(c, db_id);
 	if (!result) return false;
 
-	auto p = c->_players[c->_selected_player];
-	Stream * data = &c->_recvBuffer.data;
+	auto p = c->players[c->selected_player];
+	Stream * data = &c->recvBuffer.data;
 
-
-	data->Clear();
-	data->Resize(13);
-	data->WriteInt16(13);
-	data->WriteInt16(S_SELECT_USER);
-	data->WriteUInt8(1);
-	if (!connection_send(c))
+	w_server_node * w_node = w_server_get_node(p->continent_id, p->area_id, 1);
+	if (!w_node) {
+		printf("FAILED TO GET WORLD_SERVER_NODE CONTINENT[%d] AREA[%d]\n", p->continent_id, p->area_id);
 		return false;
-
-
-	data->Clear();
-	data->Resize(9);
-	data->WriteInt16(9);
-	data->WriteInt16(S_UPDATE_CONTENTS_ON_OFF);
-	data->WriteInt32(2);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(9);
-	data->WriteInt16(9);
-	data->WriteInt16(S_UPDATE_CONTENTS_ON_OFF);
-	data->WriteInt32(3);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(9);
-	data->WriteInt16(9);
-	data->WriteInt16(S_UPDATE_CONTENTS_ON_OFF);
-	data->WriteInt32(4);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(9);
-	data->WriteInt16(9);
-	data->WriteInt16(S_UPDATE_CONTENTS_ON_OFF);
-	data->WriteInt32(8);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(9);
-	data->WriteInt16(9);
-	data->WriteInt16(S_UPDATE_CONTENTS_ON_OFF);
-	data->WriteInt32(9);
-	if (!connection_send(c))
-		return false;
-
-
-	data->Clear();
-	data->Resize(8);
-	data->WriteInt16(8);
-	data->WriteInt16(S_BROCAST_GUILD_FLAG);
-	if (!connection_send(c))
-		return false;
-
-
-#pragma region login
-	uint16 login_size = 290;
-	data->Clear();
-	data->Resize(login_size);
-
-	data->WriteInt16(0);
-	data->WriteInt16(S_LOGIN);
-
-	uint16 name_pos = data->_pos;
-	data->_pos += 2;
-
-	uint16 details1_pos = data->_pos;
-	data->_pos += 2;
-	data->WriteInt16(SC_PLAYER_DETAILS_1_BUFFER_SIZE);
-
-	uint16 details2_pos = data->_pos;
-	data->_pos += 2;
-	data->WriteInt16(SC_PLAYER_DETAILS_2_BUFFER_SIZE);
-
-	data->WriteInt32(p->model);
-	//18
-
-	data->WriteSpawnId(p, true);
-
-	data->WriteInt32(0);   //unk
-	data->WriteUInt8(1); //alive
-	data->WriteInt32(0);   //??
-	data->WriteInt32(52);  //??
-	data->WriteInt32(110); //??
-	data->Write(p->details3, SC_PLAYER_DETAILS_3_BUFFER_SIZE); //int64 data [appearance]
-	//59
-	data->WriteInt16(1); //unk
-	data->WriteInt16((uint16)p->level);
-	//63
-	data->WriteInt32(56);
-	data->WriteInt16(66);
-	data->WriteInt16(3); //unk
-	data->WriteInt32(1);
-	data->WriteInt32(0);
-	data->WriteInt16(0);	//unk
-
-
-	data->WriteInt64(p->restedExp); //rested exp?
-	data->WriteInt64(p->exp); //player exp
-	data->WriteInt64(840); //next level exp
-	//105
-						   //data->WriteInt64(0);	//unk
-						   //data->WriteInt64(0);	//unk
-						   //data->WriteInt32(0); //restedCurrent
-						   //data->WriteInt32(0); //restedMax
-						   //data->WriteInt32(0);	//unk
-						   //data->WriteInt32(0);	//unk
-
-	data->WriteInt32(0);
-	data->WriteInt32(0);
-	data->WriteInt32(0);
-	data->WriteInt32(0);
-
-	data->WriteInt32(79497064); //??
-	data->WriteInt32(79497064);
-	data->WriteFloat(1);
-	data->WriteInt32(0); //?float???
-
-	data->WriteInt32(p->i_.get_profile_item(PROFILE_WEAPON));
-	data->WriteInt32(p->i_.get_profile_item(PROFILE_ARMOR));
-	data->WriteInt32(p->i_.get_profile_item(PROFILE_GLOVES));
-	data->WriteInt32(p->i_.get_profile_item(PROFILE_BOOTS));
-
-	data->WriteInt32(p->i_.get_profile_item(PROFILE_INNERWARE));
-	data->WriteInt32(p->i_.get_profile_item(PROFILE_HEAD_ADRONMENT)); //face
-	data->WriteInt32(p->i_.get_profile_item(PROFILE_MASK)); //head
-	//165 good
-	data->WriteInt64(30418140); //play time
-
-	data->WriteInt64(1); //unk
-	//181
-						 //data->WriteInt32(0); //reaper? 03 00 00 00 în cazul în care 3, cuvintele "Îngerul Morții"
-						 //data->WriteInt32(0);
-						 //data->WriteInt32(0);  // 00 00 00 00
-						 //data->WriteInt32(0);  // 00 00 00 00
-						 //data->WriteInt32(0);  // 00 00 00 00
-						 //data->WriteInt32(0);  // 00 00 00 00
-						 //data->WriteInt32(0);  // 00 00 00 00
-						 //data->WriteInt32(0);  // 00 00 00 00
-						 //data->WriteInt32(0);  // 00 00 00 00
-						 //data->WriteInt32(0);  // 00 00 00 00
-						 //data->WriteInt32(0);  // 00 00 00 00
-						 //data->WriteInt32(0);  // 00 00 00 00
-						 //data->WriteInt32(0);  // 00 00 00 00
-
-	data->WriteUInt8(0); //chat restricted
-	data->WriteInt32(1799); //??? 1799 //title
-
-	data->WriteInt32(0);
-	data->WriteInt32(0);
-	data->WriteInt32(0);
-	data->WriteInt32(0);
-	data->WriteInt32(0);
-	data->WriteInt32(0);
-	data->WriteInt32(0);
-	data->WriteInt32(0);
-	data->WriteInt32(0);
-	data->WriteInt32(0); //chat restricted time?
-	data->WriteInt32(0);
-	data->WriteInt32(0);
-	data->WriteInt32(0); //??
-	data->WriteInt32(0); //pixie
-
-	data->WriteUInt8(0);
-	data->WriteUInt8(1);
-
-	data->WriteInt32(0); //skins   ??
-	data->WriteInt32(0); //skins   ??
-	data->WriteInt32(0); //skins   ??
-	data->WriteInt32(0); //weapon skins
-	data->WriteInt32(0); //body skins
-	data->WriteInt32(0); //skins
-
-	data->WriteUInt8(1);
-
-	data->WriteInt32(10023);
-	data->WriteInt32(566);
-	data->WriteInt32(100);
-	data->WriteFloat(1.0f);
-	data->WriteInt32(0);
-	data->WriteUInt8(0);
-
-	data->WritePos(name_pos);
-	data->WriteString(p->name);
-
-	data->WritePos(details1_pos);
-	data->Write(p->details1, SC_PLAYER_DETAILS_1_BUFFER_SIZE);
-
-	data->WritePos(details2_pos);
-	data->Write(p->details2, SC_PLAYER_DETAILS_2_BUFFER_SIZE);
-
-	data->WritePos(0);
-	if (!connection_send(c))
-		return false;
-
-#pragma endregion
-
-	data->Clear();
-	data->Resize(8);
-	data->WriteInt16(8);
-	data->WriteInt16(S_SHOW_NPC_TO_MAP);
-	if (!connection_send(c))
-		return false;
-
-	account_load_client_settings(c, (sql::Connection*)argv[0]);
-	player_load_user_settings(p, (sql::Connection*)argv[0]);
-
-	p->i_.send();
-
-	int last = 8;
-	data->Clear();
-	data->Resize(15);
-	data->WriteInt16(0);
-	data->WriteInt16(S_SKILL_LIST);
-	data->WriteInt16(p->skills.active.size() + p->skills.passive.size());
-	data->WriteInt16(8);
-	for (int i = 0; i < p->skills.active.size(); i++)
-	{
-		data->WritePos(last);
-		data->WriteInt16(data->_pos);
-		last = data->_pos;
-		data->WriteInt16(0);
-		data->WriteInt32(p->skills.active[i]);
-		data->WriteUInt8(1);//active
 	}
-	for (int i = 0; i < p->skills.passive.size(); i++)
-	{
-		data->WritePos(last);
-		data->WriteInt16(data->_pos);
-		last = data->_pos;
-		data->WriteInt16(0);
-		data->WriteInt32(p->skills.passive[i]);
-		data->WriteUInt8(0);//passive
-
-	}
-	data->WritePos(0);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(8);
-	data->WriteInt16(8);
-	data->WriteInt16(S_AVAILABLE_SOCIAL_LIST);
-	if (!connection_send(c))
-		return false;
-
-
-	data->Clear();
-	data->Resize(4);
-	data->WriteInt16(4);
-	data->WriteInt16(S_CLEAR_QUEST_INFO);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(9);
-	data->WriteInt16(9);
-	data->WriteInt16(S_DAILY_QUEST_COMPLETE_COUNT);
-	data->WriteInt16(0);
-	data->WriteInt16(10);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(8);
-	data->WriteInt16(8);
-	data->WriteInt16(S_COMPLETED_MISSION_INFO);
-	if (!connection_send(c))
-		return false;
-	//				     6     6         1      -1    0      -1      0
-	struct a_skill { int a; int b; float c; int d; int e; int f; int g; };
-
-	data->Clear();
-	data->Resize(25);
-	data->WriteInt16(25);
-	data->WriteInt16(S_ARTISAN_SKILL_LIST);
-	data->WriteInt16(0);
-	data->WriteInt16(0);
-
-	data->WriteUInt8(0);
-
-	data->WriteInt32(0);
-	data->WriteInt32(0);
-	data->WriteInt16(0);
-	data->WriteInt16(17480);
-	data->WriteInt32(14);
-
-	if (!connection_send(c))
-		return false;
-
-
-	data->Clear();
-	data->Resize(10);
-	data->WriteInt16(10);
-	data->WriteInt16(S_ARTISAN_RECIPE_LIST);
-	data->WriteInt32(0);
-	data->WriteUInt8(0);
-	data->WriteUInt8(1);
-	if (!connection_send(c))
-		return false;
-
-	//data->Clear();
-	//data->Resize(16);
-	//data->WriteInt16(16);
-	//data->WriteInt16(S_NPCGUILD_LIST);
-	//data->WriteInt32(0); // count  and offset 
-	//data->WriteWorldId(p);
-	//if (!connection_send(c))
-	//	return false;
 
 	data->Clear();
 	data->Resize(22);
-	data->WriteInt16(22);
-	data->WriteInt16(S_PET_INCUBATOR_INFO_CHANGE);
-	data->WriteInt32(0);// count  and offset 
-	data->WriteInt32(1);
-	data->WriteInt32(0);
-	data->WriteInt32(60);
-	data->WriteInt16(0);
-	if (!connection_send(c))
-		return false;
+	data->WriteUInt16(22);
+	data->WriteUInt16(S_W_PLAYER_ENTER_WORLD);
+	data->WriteUInt32(c->id);
+	data->WriteFloat(a_load(p->x));
+	data->WriteFloat(a_load(p->y));
+	data->WriteFloat(a_load(p->z));
+	data->WriteUInt16(a_load(p->w));
+	//todo add other data here
+	w_server_send_async(w_node->id, data);
 
-	data->Clear();
-	data->Resize(12);
-	data->WriteInt16(12);
-	data->WriteInt16(S_VIRTUAL_LATENCY);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(8);
-	data->WriteInt16(8);
-	data->WriteInt16(S_MOVE_DISTANCE_DELTA);
-	data->WriteFloat(200.0f);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(8);
-	data->WriteInt16(8);
-	data->WriteInt16(S_MY_DESCRIPTION);
-	data->WriteInt32(6);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(28);
-	data->WriteInt16(28);
-	data->WriteInt16(S_F2P_PremiumUser_Permission);
-	data->WriteInt16(1);
-	data->WriteInt16(20);
-	data->WriteInt32(5);
-	data->WriteFloat(1.0f);
-	data->WriteFloat(1.0f);
-
-	data->WriteInt32(20);
-	data->WriteInt32(1);
-	if (!connection_send(c, data))
-		return false;
-
-	//TOKEN POINTS
-
-
-	data->Clear();
-	data->Resize(28);
-	data->WriteInt16(28);
-	data->WriteInt16(S_MASSTIGE_STATUS);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(58);
-	data->WriteInt16(58);
-	data->WriteInt16(S_AVAILABLE_EVENT_MATCHING_LIST);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(26);
-	data->WriteInt16(26);
-	data->WriteInt16(S_CURRENT_ELECTION_STATE);
-	if (!connection_send(c))
-		return false;
-
-	if (!player_send_external_change(p))
-		return false;
-
-#pragma region S_USER_ITEM_EQUIP_CHANGER
-	short nextPos = 0; int changer[] = { 1,3,4,5,6,7,8,9,10,11,19,20 };
-
-	data->Clear();
-	data->Resize(160);
-	data->WriteInt16(160);
-	data->WriteInt16(S_USER_ITEM_EQUIP_CHANGER);
-
-	data->WriteInt16(12); //count
-	nextPos = data->_pos;
-	data->_pos += 2;
-
-	data->WriteWorldId(p);
-
-	for (size_t i = 0; i < 12; i++)
-	{
-		data->WritePos(nextPos);
-		data->WriteInt16(data->_pos); //base offset
-		nextPos = data->_pos;
-		data->_pos += 2;
-		data->WriteInt64(changer[i]);
-	}
-
-	data->WritePos(0);
-	if (!connection_send(c, data))
-		return false;
-#pragma endregion
-
-	data->Clear();
-	data->Resize(8);
-	data->WriteInt16(8);
-	data->WriteInt16(S_FESTIVAL_LIST);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(21);
-	data->WriteInt16(21);
-	data->WriteInt16(S_LOAD_TOPO);
-	data->WriteInt32(p->position.continent_id);
-	data->WriteFloat(p->position.x.load());
-	data->WriteFloat(p->position.y.load());
-	data->WriteFloat(p->position.z.load());
-	//data->WriteByte(0);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(8);
-	data->WriteInt16(8);
-	data->WriteInt16(S_LOAD_HINT);
-	if (!connection_send(c))
-		return false;
-
-
-	data->Clear();
-	data->Resize(9);
-	data->WriteInt16(9);
-	data->WriteInt16(S_ACCOUNT_BENEFIT_LIST);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(16);
-	data->WriteInt16(16);
-	data->WriteInt16(S_SEND_USER_PLAY_TIME);
-	data->WriteInt32(0); //online time [s]
-	data->WriteInt64(1484999153); //creation time
-	if (!connection_send(c))
-		return false;
-
-
-	data->Clear();
-	data->Resize(12);
-	data->WriteInt16(12);
-	data->WriteInt16(S_PCBANGINVENTORY_DATALIST);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(36);
-	data->WriteInt16(36);
-	data->WriteInt16(S_UPDATE_NPCGUILD);
-	data->WriteWorldId(p);
-	data->WriteInt32(1);
-	data->WriteInt32(9);
-	data->WriteInt32(610);
-	data->WriteInt32(6);
-	data->WriteInt64(0);
-	if (!connection_send(c))
-		return false;
-
-
-	data->Clear();
-	data->Resize(8);
-	data->WriteInt16(8);
-	data->WriteInt16(S_COMPLETED_MISSION_INFO);
-	if (!connection_send(c))
-		return false;
-
-
-	data->Clear();
-	data->Resize(12);
-	data->WriteInt16(12);
-	data->WriteInt16(S_FATIGABILITY_POINT);
-	data->WriteInt32(1);
-	data->WriteInt32(20);
-	if (!connection_send(c))
-		return false;
-
-	data->Clear();
-	data->Resize(44);
-	data->WriteInt16(44);
-	data->WriteInt16(S_LOAD_EP_INFO);
-	if (!connection_send(c))
-		return false;
+	//	data->Clear();
+	//	data->Resize(13);
+	//	data->WriteInt16(13);
+	//	data->WriteInt16(S_SELECT_USER);
+	//	data->WriteUInt8(1);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//
+	//	data->Clear();
+	//	data->Resize(9);
+	//	data->WriteInt16(9);
+	//	data->WriteInt16(S_UPDATE_CONTENTS_ON_OFF);
+	//	data->WriteInt32(2);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(9);
+	//	data->WriteInt16(9);
+	//	data->WriteInt16(S_UPDATE_CONTENTS_ON_OFF);
+	//	data->WriteInt32(3);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(9);
+	//	data->WriteInt16(9);
+	//	data->WriteInt16(S_UPDATE_CONTENTS_ON_OFF);
+	//	data->WriteInt32(4);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(9);
+	//	data->WriteInt16(9);
+	//	data->WriteInt16(S_UPDATE_CONTENTS_ON_OFF);
+	//	data->WriteInt32(8);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(9);
+	//	data->WriteInt16(9);
+	//	data->WriteInt16(S_UPDATE_CONTENTS_ON_OFF);
+	//	data->WriteInt32(9);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//
+	//	data->Clear();
+	//	data->Resize(8);
+	//	data->WriteInt16(8);
+	//	data->WriteInt16(S_BROCAST_GUILD_FLAG);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//
+	//#pragma region login
+	//	uint16 login_size = 290;
+	//	data->Clear();
+	//	data->Resize(login_size);
+	//
+	//	data->WriteInt16(0);
+	//	data->WriteInt16(S_LOGIN);
+	//
+	//	uint16 name_pos = data->_pos;
+	//	data->_pos += 2;
+	//
+	//	uint16 details1_pos = data->_pos;
+	//	data->_pos += 2;
+	//	data->WriteInt16(SC_PLAYER_DETAILS_1_BUFFER_SIZE);
+	//
+	//	uint16 details2_pos = data->_pos;
+	//	data->_pos += 2;
+	//	data->WriteInt16(SC_PLAYER_DETAILS_2_BUFFER_SIZE);
+	//
+	//	data->WriteInt32(p->model);
+	//	//18
+	//
+	//	data->WriteSpawnId(p, true);
+	//
+	//	data->WriteInt32(0);   //unk
+	//	data->WriteUInt8(1); //alive
+	//	data->WriteInt32(0);   //??
+	//	data->WriteInt32(52);  //??
+	//	data->WriteInt32(110); //??
+	//	data->Write(p->details3, SC_PLAYER_DETAILS_3_BUFFER_SIZE); //int64 data [appearance]
+	//	//59
+	//	data->WriteInt16(1); //unk
+	//	data->WriteInt16((uint16)p->level);
+	//	//63
+	//	data->WriteInt32(56);
+	//	data->WriteInt16(66);
+	//	data->WriteInt16(3); //unk
+	//	data->WriteInt32(1);
+	//	data->WriteInt32(0);
+	//	data->WriteInt16(0);	//unk
+	//
+	//
+	//	data->WriteInt64(p->restedExp); //rested exp?
+	//	data->WriteInt64(p->exp); //player exp
+	//	data->WriteInt64(840); //next level exp
+	//	//105
+	//						   //data->WriteInt64(0);	//unk
+	//						   //data->WriteInt64(0);	//unk
+	//						   //data->WriteInt32(0); //restedCurrent
+	//						   //data->WriteInt32(0); //restedMax
+	//						   //data->WriteInt32(0);	//unk
+	//						   //data->WriteInt32(0);	//unk
+	//
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(0);
+	//
+	//	data->WriteInt32(79497064); //??
+	//	data->WriteInt32(79497064);
+	//	data->WriteFloat(1);
+	//	data->WriteInt32(0); //?float???
+	//
+	//	data->WriteInt32(p->i_.get_profile_item(PROFILE_WEAPON));
+	//	data->WriteInt32(p->i_.get_profile_item(PROFILE_ARMOR));
+	//	data->WriteInt32(p->i_.get_profile_item(PROFILE_GLOVES));
+	//	data->WriteInt32(p->i_.get_profile_item(PROFILE_BOOTS));
+	//
+	//	data->WriteInt32(p->i_.get_profile_item(PROFILE_INNERWARE));
+	//	data->WriteInt32(p->i_.get_profile_item(PROFILE_HEAD_ADRONMENT)); //face
+	//	data->WriteInt32(p->i_.get_profile_item(PROFILE_MASK)); //head
+	//	//165 good
+	//	data->WriteInt64(30418140); //play time
+	//
+	//	data->WriteInt64(1); //unk
+	//	//181
+	//						 //data->WriteInt32(0); //reaper? 03 00 00 00 în cazul în care 3, cuvintele "Îngerul Morții"
+	//						 //data->WriteInt32(0);
+	//						 //data->WriteInt32(0);  // 00 00 00 00
+	//						 //data->WriteInt32(0);  // 00 00 00 00
+	//						 //data->WriteInt32(0);  // 00 00 00 00
+	//						 //data->WriteInt32(0);  // 00 00 00 00
+	//						 //data->WriteInt32(0);  // 00 00 00 00
+	//						 //data->WriteInt32(0);  // 00 00 00 00
+	//						 //data->WriteInt32(0);  // 00 00 00 00
+	//						 //data->WriteInt32(0);  // 00 00 00 00
+	//						 //data->WriteInt32(0);  // 00 00 00 00
+	//						 //data->WriteInt32(0);  // 00 00 00 00
+	//						 //data->WriteInt32(0);  // 00 00 00 00
+	//
+	//	data->WriteUInt8(0); //chat restricted
+	//	data->WriteInt32(1799); //??? 1799 //title
+	//
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(0); //chat restricted time?
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(0); //??
+	//	data->WriteInt32(0); //pixie
+	//
+	//	data->WriteUInt8(0);
+	//	data->WriteUInt8(1);
+	//
+	//	data->WriteInt32(0); //skins   ??
+	//	data->WriteInt32(0); //skins   ??
+	//	data->WriteInt32(0); //skins   ??
+	//	data->WriteInt32(0); //weapon skins
+	//	data->WriteInt32(0); //body skins
+	//	data->WriteInt32(0); //skins
+	//
+	//	data->WriteUInt8(1);
+	//
+	//	data->WriteInt32(10023);
+	//	data->WriteInt32(566);
+	//	data->WriteInt32(100);
+	//	data->WriteFloat(1.0f);
+	//	data->WriteInt32(0);
+	//	data->WriteUInt8(0);
+	//
+	//	data->WritePos(name_pos);
+	//	data->WriteString(p->name);
+	//
+	//	data->WritePos(details1_pos);
+	//	data->Write(p->details1, SC_PLAYER_DETAILS_1_BUFFER_SIZE);
+	//
+	//	data->WritePos(details2_pos);
+	//	data->Write(p->details2, SC_PLAYER_DETAILS_2_BUFFER_SIZE);
+	//
+	//	data->WritePos(0);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//#pragma endregion
+	//
+	//	data->Clear();
+	//	data->Resize(8);
+	//	data->WriteInt16(8);
+	//	data->WriteInt16(S_SHOW_NPC_TO_MAP);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	account_load_client_settings(c, (sql::Connection*)argv[0]);
+	//	player_load_user_settings(p, (sql::Connection*)argv[0]);
+	//
+	//	p->i_.send();
+	//
+	//	//int last = 8;
+	//	//data->Clear();
+	//	//data->Resize(15);
+	//	//data->WriteInt16(0);
+	//	//data->WriteInt16(S_SKILL_LIST);
+	//	//data->WriteInt16(p->skills.active.size() + p->skills.passive.size());
+	//	//data->WriteInt16(8);
+	//	//for (int i = 0; i < p->skills.active.size(); i++)
+	//	//{
+	//	//	data->WritePos(last);
+	//	//	data->WriteInt16(data->_pos);
+	//	//	last = data->_pos;
+	//	//	data->WriteInt16(0);
+	//	//	data->WriteInt32(p->skills.active[i]);
+	//	//	data->WriteUInt8(1);//active
+	//	//}
+	//	//for (int i = 0; i < p->skills.passive.size(); i++)
+	//	//{
+	//	//	data->WritePos(last);
+	//	//	data->WriteInt16(data->_pos);
+	//	//	last = data->_pos;
+	//	//	data->WriteInt16(0);
+	//	//	data->WriteInt32(p->skills.passive[i]);
+	//	//	data->WriteUInt8(0);//passive
+	//	//}
+	//	//data->WritePos(0);
+	//	//if (!connection_send(c))
+	//	//	return false;
+	//
+	//	data->Clear();
+	//	data->Resize(8);
+	//	data->WriteInt16(8);
+	//	data->WriteInt16(S_AVAILABLE_SOCIAL_LIST);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//
+	//	data->Clear();
+	//	data->Resize(4);
+	//	data->WriteInt16(4);
+	//	data->WriteInt16(S_CLEAR_QUEST_INFO);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(9);
+	//	data->WriteInt16(9);
+	//	data->WriteInt16(S_DAILY_QUEST_COMPLETE_COUNT);
+	//	data->WriteInt16(0);
+	//	data->WriteInt16(10);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(8);
+	//	data->WriteInt16(8);
+	//	data->WriteInt16(S_COMPLETED_MISSION_INFO);
+	//	if (!connection_send(c))
+	//		return false;
+	//	//				     6     6         1      -1    0      -1      0
+	//	struct a_skill { int a; int b; float c; int d; int e; int f; int g; };
+	//
+	//	data->Clear();
+	//	data->Resize(25);
+	//	data->WriteInt16(25);
+	//	data->WriteInt16(S_ARTISAN_SKILL_LIST);
+	//	data->WriteInt16(0);
+	//	data->WriteInt16(0);
+	//
+	//	data->WriteUInt8(0);
+	//
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(0);
+	//	data->WriteInt16(0);
+	//	data->WriteInt16(17480);
+	//	data->WriteInt32(14);
+	//
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//
+	//	data->Clear();
+	//	data->Resize(10);
+	//	data->WriteInt16(10);
+	//	data->WriteInt16(S_ARTISAN_RECIPE_LIST);
+	//	data->WriteInt32(0);
+	//	data->WriteUInt8(0);
+	//	data->WriteUInt8(1);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	//data->Clear();
+	//	//data->Resize(16);
+	//	//data->WriteInt16(16);
+	//	//data->WriteInt16(S_NPCGUILD_LIST);
+	//	//data->WriteInt32(0); // count  and offset 
+	//	//data->WriteWorldId(p);
+	//	//if (!connection_send(c))
+	//	//	return false;
+	//
+	//	data->Clear();
+	//	data->Resize(22);
+	//	data->WriteInt16(22);
+	//	data->WriteInt16(S_PET_INCUBATOR_INFO_CHANGE);
+	//	data->WriteInt32(0);// count  and offset 
+	//	data->WriteInt32(1);
+	//	data->WriteInt32(0);
+	//	data->WriteInt32(60);
+	//	data->WriteInt16(0);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(12);
+	//	data->WriteInt16(12);
+	//	data->WriteInt16(S_VIRTUAL_LATENCY);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(8);
+	//	data->WriteInt16(8);
+	//	data->WriteInt16(S_MOVE_DISTANCE_DELTA);
+	//	data->WriteFloat(200.0f);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(8);
+	//	data->WriteInt16(8);
+	//	data->WriteInt16(S_MY_DESCRIPTION);
+	//	data->WriteInt32(6);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(28);
+	//	data->WriteInt16(28);
+	//	data->WriteInt16(S_F2P_PremiumUser_Permission);
+	//	data->WriteInt16(1);
+	//	data->WriteInt16(20);
+	//	data->WriteInt32(5);
+	//	data->WriteFloat(1.0f);
+	//	data->WriteFloat(1.0f);
+	//
+	//	data->WriteInt32(20);
+	//	data->WriteInt32(1);
+	//	if (!connection_send(c, data))
+	//		return false;
+	//
+	//	//TOKEN POINTS
+	//
+	//
+	//	data->Clear();
+	//	data->Resize(28);
+	//	data->WriteInt16(28);
+	//	data->WriteInt16(S_MASSTIGE_STATUS);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(58);
+	//	data->WriteInt16(58);
+	//	data->WriteInt16(S_AVAILABLE_EVENT_MATCHING_LIST);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(26);
+	//	data->WriteInt16(26);
+	//	data->WriteInt16(S_CURRENT_ELECTION_STATE);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//#pragma region S_USER_ITEM_EQUIP_CHANGER
+	//	short nextPos = 0; int changer[] = { 1,3,4,5,6,7,8,9,10,11,19,20 };
+	//
+	//	data->Clear();
+	//	data->Resize(160);
+	//	data->WriteInt16(160);
+	//	data->WriteInt16(S_USER_ITEM_EQUIP_CHANGER);
+	//
+	//	data->WriteInt16(12); //count
+	//	nextPos = data->_pos;
+	//	data->_pos += 2;
+	//
+	//	data->WriteWorldId(p);
+	//
+	//	for (size_t i = 0; i < 12; i++)
+	//	{
+	//		data->WritePos(nextPos);
+	//		data->WriteInt16(data->_pos); //base offset
+	//		nextPos = data->_pos;
+	//		data->_pos += 2;
+	//		data->WriteInt64(changer[i]);
+	//	}
+	//
+	//	data->WritePos(0);
+	//	if (!connection_send(c, data))
+	//		return false;
+	//#pragma endregion
+	//
+	//	data->Clear();
+	//	data->Resize(8);
+	//	data->WriteInt16(8);
+	//	data->WriteInt16(S_FESTIVAL_LIST);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(21);
+	//	data->WriteInt16(21);
+	//	data->WriteInt16(S_LOAD_TOPO);
+	//	data->WriteInt32(p->continent_id);
+	//	data->WriteFloat(a_load(p->x));
+	//	data->WriteFloat(a_load(p->y));
+	//	data->WriteFloat(a_load(p->z));
+	//	//data->WriteByte(0);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(8);
+	//	data->WriteInt16(8);
+	//	data->WriteInt16(S_LOAD_HINT);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//
+	//	data->Clear();
+	//	data->Resize(9);
+	//	data->WriteInt16(9);
+	//	data->WriteInt16(S_ACCOUNT_BENEFIT_LIST);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(16);
+	//	data->WriteInt16(16);
+	//	data->WriteInt16(S_SEND_USER_PLAY_TIME);
+	//	data->WriteInt32(0); //online time [s]
+	//	data->WriteInt64(1484999153); //creation time
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//
+	//	data->Clear();
+	//	data->Resize(12);
+	//	data->WriteInt16(12);
+	//	data->WriteInt16(S_PCBANGINVENTORY_DATALIST);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(36);
+	//	data->WriteInt16(36);
+	//	data->WriteInt16(S_UPDATE_NPCGUILD);
+	//	data->WriteWorldId(p);
+	//	data->WriteInt32(1);
+	//	data->WriteInt32(9);
+	//	data->WriteInt32(610);
+	//	data->WriteInt32(6);
+	//	data->WriteInt64(0);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//
+	//	data->Clear();
+	//	data->Resize(8);
+	//	data->WriteInt16(8);
+	//	data->WriteInt16(S_COMPLETED_MISSION_INFO);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//
+	//	data->Clear();
+	//	data->Resize(12);
+	//	data->WriteInt16(12);
+	//	data->WriteInt16(S_FATIGABILITY_POINT);
+	//	data->WriteInt32(1);
+	//	data->WriteInt32(20);
+	//	if (!connection_send(c))
+	//		return false;
+	//
+	//	data->Clear();
+	//	data->Resize(44);
+	//	data->WriteInt16(44);
+	//	data->WriteInt16(S_LOAD_EP_INFO);
+	//	if (!connection_send(c))
+	//		return false;
 
 	return true;
 }
@@ -1471,15 +1483,15 @@ bool WINAPI op_delete_player(std::shared_ptr<connection>c, void* argv[])
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 
-	uint32 db_id = c->_recvBuffer.data.ReadInt32();
+	uint32 db_id = c->recvBuffer.data.ReadInt32();
 	bool result = true;
 
 	std::shared_ptr<player> p_p = nullptr;
 	for (uint8 i = 0; i < SC_PLAYER_NAME_MAX_LENGTH; i++)
-		if (c->_players[i] && c->_players[i]->dbid == db_id)
+		if (c->players[i] && c->players[i]->dbid == db_id)
 		{
-			p_p = c->_players[i];
-			c->_players[i] = nullptr;
+			p_p = c->players[i];
+			c->players[i] = nullptr;
 			break;
 		}
 
@@ -1551,7 +1563,7 @@ bool WINAPI op_delete_player(std::shared_ptr<connection>c, void* argv[])
 
 	}
 
-	entity_manager::destroy_player(p_p->eid);
+	//entity_manager::destroy_player(p_p->eid);
 
 	Stream data = Stream();
 	data.Resize(5);
@@ -1576,12 +1588,12 @@ bool WINAPI op_save_client_account_settings(std::shared_ptr<connection>c, void* 
 #ifdef OP_DUMP
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
-	c->_recvBuffer.data._pos += 4;
+	c->recvBuffer.data._pos += 4;
 	sql::Connection* con = (sql::Connection*)argv[0];
 	sql::PreparedStatement *s = con->prepareStatement("UPDATE accounts SET accountSettings=? WHERE username=?");
-	std::stringstream blob = std::stringstream(std::string((char*)c->_recvBuffer.data._raw, c->_recvBuffer.data._size));
+	std::stringstream blob = std::stringstream(std::string((char*)c->recvBuffer.data._raw, c->recvBuffer.data._size));
 	s->setBlob(1, (std::istream*)&blob);
-	s->setString(2, c->_account.username);
+	s->setString(2, c->account.username);
 	try
 	{
 		s->executeUpdate();
@@ -1593,7 +1605,7 @@ bool WINAPI op_save_client_account_settings(std::shared_ptr<connection>c, void* 
 	}
 
 	delete s;
-	c->_recvBuffer.data.Clear();
+	c->recvBuffer.data.Clear();
 	return true;
 }
 
@@ -1602,13 +1614,13 @@ bool WINAPI op_save_client_user_settings(std::shared_ptr<connection>c, void* arg
 #ifdef OP_DUMP
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
-	c->_recvBuffer.data._pos += 4;
+	c->recvBuffer.data._pos += 4;
 	sql::Connection* con = (sql::Connection*)argv[0];
 	sql::PreparedStatement *s = con->prepareStatement("UPDATE player_settings SET settings=? WHERE name=? AND username=?");
-	std::stringstream blob = std::stringstream(std::string((char*)c->_recvBuffer.data._raw, c->_recvBuffer.data._size));
+	std::stringstream blob = std::stringstream(std::string((char*)c->recvBuffer.data._raw, c->recvBuffer.data._size));
 	s->setBlob(1, (std::istream*)&blob);
-	s->setString(2, c->_players[c->_selected_player]->name);
-	s->setString(3, c->_account.username);
+	s->setString(2, c->players[c->selected_player]->name);
+	s->setString(3, c->account.username);
 
 	try
 	{
@@ -1630,48 +1642,33 @@ bool WINAPI op_load_topo_fin(std::shared_ptr<connection>c, void* argv[])
 #ifdef OP_DUMP
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
-	sql::Connection* con = (sql::Connection*)argv[0];
-	uint32	data[2];
-	try
-	{
-		sql::PreparedStatement * p_s = con->prepareStatement("SELECT * FROM players WHERE name=?");
-		p_s->setString(1, c->_players[c->_selected_player]->name);
+	c->recvBuffer.data.Clear();
+	c->recvBuffer.data.Resize(10);
+	c->recvBuffer.data.WriteUInt16(10);
+	c->recvBuffer.data.WriteUInt16(S_W_GET_VISIBLE_PLAYERS);
+	c->recvBuffer.data.WriteUInt32(c->id);
+	c->recvBuffer.data.WriteInt16(IO_LOAD_TOPO_FIN);
+	c->recvBuffer.data.Clear();
+	w_server_get_visible_list_async(c, IO_LOAD_TOPO_FIN, c->recvBuffer.data);
+	return true;
 
-		sql::ResultSet * r_s = p_s->executeQuery();
-		if (r_s && r_s->next())
-		{
-			data[0] = r_s->getInt("areaId"); //13
-			data[1] = r_s->getInt("channel");
-		}
-		if (r_s) delete r_s;
-		delete p_s;
-	}
-	catch (sql::SQLException& e)
-	{
-		printf("SQL-ERROR-[%s] FUNC[%s]\n", e.what(), __FUNCTION__);
-		return false;
-	}
-
-	active_add_player(c->_players[c->_selected_player]);
-
-	c->_inLobby = false;
-	return world_server_process_job_async(new j_enter_world(c->_players[c->_selected_player], data), J_W_PLAYER_ENTER_WORLD);
 }
 
 bool WINAPI op_return_to_lobby(std::shared_ptr<connection> c, void* argv[])
 {
 	//todo timed
-	world_server_process_job_async(new j_exit_world(c->_players[c->_selected_player]), J_W_PLAYER_EXIT_WORLD);
-	active_remove_player(c->_players[c->_selected_player]);
-	c->_players[c->_selected_player]->save((sql::Connection*)argv[0]);
-
-	Sleep(500);
-	Stream data = Stream();
-	data.Resize(4);
-	data.WriteInt16(4);
-	data.WriteInt16(S_RETURN_TO_LOBBY);
-	c->_players[c->_selected_player]->con->_inLobby = true;
-	return connection_send(c, &data);
+	//world_server_process_job_async(new j_exit_world(c->_players[c->_selected_player]), J_W_PLAYER_EXIT_WORLD);
+	//active_remove_player(c->_players[c->_selected_player]);
+	//c->_players[c->_selected_player]->save((sql::Connection*)argv[0]);
+	//
+	//Sleep(500);
+	//Stream data = Stream();
+	//data.Resize(4);
+	//data.WriteInt16(4);
+	//data.WriteInt16(S_RETURN_TO_LOBBY);
+	//c->_players[c->_selected_player]->con->_inLobby = true;
+	//return connection_send(c, &data);
+	return false;
 
 }
 
@@ -1682,17 +1679,18 @@ bool WINAPI op_cancel_return_to_lobby(std::shared_ptr<connection>, void* argv[])
 
 bool WINAPI op_exit(std::shared_ptr<connection> c, void* argv[])
 {
-	world_server_process_job_async(new j_exit_world(c->_players[c->_selected_player]), J_W_PLAYER_EXIT_WORLD);
-	active_remove_player(c->_players[c->_selected_player]);
-	c->_players[c->_selected_player]->save((sql::Connection*)argv[0]);
-
-	Stream data = Stream();
-	data.Resize(12);
-	data.WriteInt16(12);
-	data.WriteInt16(S_EXIT);
-	data.WriteInt16(0);
-	data.WriteInt32(1);
-	return connection_send(c, &data);
+	//world_server_process_job_async(new j_exit_world(c->_players[c->_selected_player]), J_W_PLAYER_EXIT_WORLD);
+	//active_remove_player(c->_players[c->_selected_player]);
+	//c->_players[c->_selected_player]->save((sql::Connection*)argv[0]);
+	//
+	//Stream data = Stream();
+	//data.Resize(12);
+	//data.WriteInt16(12);
+	//data.WriteInt16(S_EXIT);
+	//data.WriteInt16(0);
+	//data.WriteInt32(1);
+	//return connection_send(c, &data);
+	return false;
 }
 
 bool WINAPI op_guard_pk_policy(std::shared_ptr<connection>c, void* argv[])
@@ -1701,14 +1699,14 @@ bool WINAPI op_guard_pk_policy(std::shared_ptr<connection>c, void* argv[])
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 
-	c->_recvBuffer.data.Clear();
-	c->_recvBuffer.data.Resize(7);
-	c->_recvBuffer.data.WriteInt16(7);
-	c->_recvBuffer.data.WriteInt16(S_GUARD_PK_POLICY);
-	c->_recvBuffer.data.WriteInt16(1);
+	c->recvBuffer.data.Clear();
+	c->recvBuffer.data.Resize(7);
+	c->recvBuffer.data.WriteInt16(7);
+	c->recvBuffer.data.WriteInt16(S_GUARD_PK_POLICY);
+	c->recvBuffer.data.WriteInt16(1);
 	//uint8 0
 
-	return connection_send(c, &c->_recvBuffer.data);
+	return connection_send(c, &c->recvBuffer.data);
 }
 
 bool WINAPI op_simple_tip_repeate_checl(std::shared_ptr<connection>c, void* argv[])
@@ -1717,16 +1715,16 @@ bool WINAPI op_simple_tip_repeate_checl(std::shared_ptr<connection>c, void* argv
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 
-	uint32 tip = c->_recvBuffer.data.ReadInt32();
-	c->_recvBuffer.data.Clear();
-	c->_recvBuffer.data.Resize(11);
-	c->_recvBuffer.data.WriteInt16(11);
-	c->_recvBuffer.data.WriteInt16(S_SIMPLE_TIP_REPEAT_CHECK);
-	c->_recvBuffer.data.WriteInt32(tip);
-	c->_recvBuffer.data.WriteInt16(1);
-	//c->_recvBuffer.data.WriteByte(0);
+	uint32 tip = c->recvBuffer.data.ReadInt32();
+	c->recvBuffer.data.Clear();
+	c->recvBuffer.data.Resize(11);
+	c->recvBuffer.data.WriteInt16(11);
+	c->recvBuffer.data.WriteInt16(S_SIMPLE_TIP_REPEAT_CHECK);
+	c->recvBuffer.data.WriteInt32(tip);
+	c->recvBuffer.data.WriteInt16(1);
+	//c->recvBuffer.data.WriteByte(0);
 
-	return connection_send(c, &c->_recvBuffer.data);
+	return connection_send(c, &c->recvBuffer.data);
 }
 
 bool WINAPI op_tradebroker_heighes_item_level(std::shared_ptr<connection>c, void* argv[])
@@ -1735,13 +1733,13 @@ bool WINAPI op_tradebroker_heighes_item_level(std::shared_ptr<connection>c, void
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 
-	c->_recvBuffer.data.Clear();
-	c->_recvBuffer.data.Resize(10);
-	c->_recvBuffer.data.WriteInt16(10);
-	c->_recvBuffer.data.WriteInt16(S_TRADE_BROKER_HIGHEST_ITEM_LEVEL);
+	c->recvBuffer.data.Clear();
+	c->recvBuffer.data.Resize(10);
+	c->recvBuffer.data.WriteInt16(10);
+	c->recvBuffer.data.WriteInt16(S_TRADE_BROKER_HIGHEST_ITEM_LEVEL);
 	//uint32 0
 	//uint16 0
-	return connection_send(c, &c->_recvBuffer.data);
+	return connection_send(c, &c->recvBuffer.data);
 }
 
 bool WINAPI op_server_time(std::shared_ptr<connection>c, void* argv[])
@@ -1750,13 +1748,13 @@ bool WINAPI op_server_time(std::shared_ptr<connection>c, void* argv[])
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 
-	c->_recvBuffer.data.Clear();
-	c->_recvBuffer.data.Resize(12);
-	c->_recvBuffer.data.WriteInt16(12);
-	c->_recvBuffer.data.WriteInt16(S_SERVER_TIME);
-	c->_recvBuffer.data.WriteInt64(timer_get_current_UTC());
+	c->recvBuffer.data.Clear();
+	c->recvBuffer.data.Resize(12);
+	c->recvBuffer.data.WriteInt16(12);
+	c->recvBuffer.data.WriteInt16(S_SERVER_TIME);
+	c->recvBuffer.data.WriteInt64(timer_get_current_UTC());
 
-	return connection_send(c, &c->_recvBuffer.data);
+	return connection_send(c, &c->recvBuffer.data);
 }
 
 bool WINAPI op_update_contents_playtime(std::shared_ptr<connection>, void* argv[] /*todo*/)
@@ -1808,52 +1806,47 @@ bool WINAPI op_request_ingame_product_list(std::shared_ptr<connection>, void* ar
 	return true;
 }
 
-bool WINAPI op_player_location(std::shared_ptr<connection>c, void* argv[])
+bool WINAPI op_player_location(std::shared_ptr<connection> c, void* argv[])
 {
 #ifdef OP_DUMP
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
-	std::shared_ptr<player> p = c->_players[c->_selected_player];
+	c->p_n[0] = c->recvBuffer.data.ReadFloat();	 //new x
+	c->p_n[1] = c->recvBuffer.data.ReadFloat();	 //new y
+	c->p_n[2] = c->recvBuffer.data.ReadFloat();	 //new z
+	c->p_t[0] = c->recvBuffer.data.ReadInt16(); //heading
+	c->recvBuffer.data._pos += 2;
+	c->p_n[3] = c->recvBuffer.data.ReadFloat();	 //target x
+	c->p_n[4] = c->recvBuffer.data.ReadFloat();	 //target y
+	c->p_n[5] = c->recvBuffer.data.ReadFloat();	 //target z
 
-	float p_init[3];
-	p_init[0] = a_load(p->position.x);
-	p_init[1] = a_load(p->position.y);
-	p_init[2] = a_load(p->position.z);
+	c->p_t[1] = (uint16)c->recvBuffer.data.ReadInt32(); //type
+	c->p_t[2] = c->recvBuffer.data.ReadUInt16(); //speed
+	c->p_t[3] = c->recvBuffer.data.ReadInt16(); //time
 
-	p->position.x.store(c->_recvBuffer.data.ReadFloat());
-	p->position.y.store(c->_recvBuffer.data.ReadFloat());
-	p->position.z.store(c->_recvBuffer.data.ReadFloat());
-	p->position.heading.store(c->_recvBuffer.data.ReadInt16());
-	c->_recvBuffer.data._pos += 2;
-	p->position.t_x.store(c->_recvBuffer.data.ReadFloat());
-	p->position.t_y.store(c->_recvBuffer.data.ReadFloat());
-	p->position.t_z.store(c->_recvBuffer.data.ReadFloat());
-	e_player_move_type t = (e_player_move_type)c->_recvBuffer.data.ReadInt32();
-	uint16 speed = c->_recvBuffer.data.ReadUInt16();
-	uint16 time = c->_recvBuffer.data.ReadInt16();
+	a_store(c->players[c->selected_player]->x, c->p_n[0]);
+	a_store(c->players[c->selected_player]->y, c->p_n[1]);
+	a_store(c->players[c->selected_player]->z, c->p_n[2]);
+	a_store(c->players[c->selected_player]->w, c->p_t[0]);
 
-	//printf("MOVE [%d] [%lu]\n", speed, time);
+	Stream test;
+	test.Resize(40);
+	test.WriteUInt16(40);
+	test.WriteUInt16(S_W_PLAYER_MOVE);
+	test.WriteUInt32(c->id);
+	test.WriteUInt16(c->p_t[0]); //heading
+	test.WriteUInt16(c->p_t[1]); //type
+	test.WriteUInt16(c->p_t[2]); //speed
+	test.WriteUInt16(c->p_t[3]); //time
+	test.WriteFloat(c->p_n[0]);  //new x,y,z
+	test.WriteFloat(c->p_n[1]);  //new x,y,z
+	test.WriteFloat(c->p_n[2]);  //new x,y,z
+	test.WriteFloat(c->p_n[3]);  //target x,y,z
+	test.WriteFloat(c->p_n[4]);  //target x,y,z
+	test.WriteFloat(c->p_n[5]);  //target x,y,z
+	test.WritePos(0);
 
-	Stream data = Stream();
-	data.Resize(47);
-	data.WriteInt16(47);
-	data.WriteInt16(S_USER_LOCATION);
-	data.WriteWorldId(p);
-	data.WriteFloat(a_load(p->position.x));
-	data.WriteFloat(a_load(p->position.y));
-	data.WriteFloat(a_load(p->position.z));
-	data.WriteInt32(p->position.heading.load());
-	data.WriteInt16(t == P_JUMP_START ? speed : p->stats.get_movement_speed(p->status)); //todo 
-	data.WriteFloat(a_load(p->position.t_x));
-	data.WriteFloat(a_load(p->position.t_y));
-	data.WriteFloat(a_load(p->position.t_z));
-	data.WriteInt32(t);
-	data.WriteUInt8(1);
-
-	if (!world_server_process_job_async(new j_move(p, p_init, t), J_W_PLAYER_MOVE))
-		return false;
-
-	p->spawn.bordacast(&data);
+	w_server_send_async(c->node_id, &test);
 	return true;
 }
 
@@ -1881,20 +1874,20 @@ bool WINAPI op_reign_info(std::shared_ptr<connection>c, void* argv[])
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 
-	int unk1 = c->_recvBuffer.data.ReadInt32();
+	int unk1 = c->recvBuffer.data.ReadInt32();
 
-	c->_recvBuffer.data.Clear();
-	c->_recvBuffer.data.Resize(18);
-	c->_recvBuffer.data.WriteInt16(18);
-	c->_recvBuffer.data.WriteInt16(S_REIGN_INFO);
-	c->_recvBuffer.data.WriteInt16(12);//unk
-	c->_recvBuffer.data.WriteInt16(14);//unk
+	c->recvBuffer.data.Clear();
+	c->recvBuffer.data.Resize(18);
+	c->recvBuffer.data.WriteInt16(18);
+	c->recvBuffer.data.WriteInt16(S_REIGN_INFO);
+	c->recvBuffer.data.WriteInt16(12);//unk
+	c->recvBuffer.data.WriteInt16(14);//unk
 
-	c->_recvBuffer.data.WriteInt32(unk1);
-	//c->_recvBuffer.data.WriteInt32(0);
-	//c->_recvBuffer.data.WriteInt16(0);
+	c->recvBuffer.data.WriteInt32(unk1);
+	//c->recvBuffer.data.WriteInt32(0);
+	//c->recvBuffer.data.WriteInt16(0);
 
-	return connection_send(c, &c->_recvBuffer.data);
+	return connection_send(c, &c->recvBuffer.data);
 }
 
 bool WINAPI op_request_gamestat_ping(std::shared_ptr<connection>c, void* argv[])
@@ -1903,10 +1896,10 @@ bool WINAPI op_request_gamestat_ping(std::shared_ptr<connection>c, void* argv[])
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 
-	c->_recvBuffer.data.Clear();
-	c->_recvBuffer.data.Resize(4);
-	c->_recvBuffer.data.WriteInt16(4);
-	c->_recvBuffer.data.WriteInt16(S_RESPONSE_GAMESTAT_PONG);
+	c->recvBuffer.data.Clear();
+	c->recvBuffer.data.Resize(4);
+	c->recvBuffer.data.WriteInt16(4);
+	c->recvBuffer.data.WriteInt16(S_RESPONSE_GAMESTAT_PONG);
 	return connection_send(c);
 }
 
@@ -1925,13 +1918,13 @@ bool WINAPI op_visit_new_section(std::shared_ptr<connection>c, void* argv[])
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 
-	uint32 worldMapWorldId = (uint32)c->_recvBuffer.data.ReadInt16();
-	c->_recvBuffer.data.ReadInt16();
+	uint32 worldMapWorldId = (uint32)c->recvBuffer.data.ReadInt16();
+	c->recvBuffer.data.ReadInt16();
 
-	uint32 worldMapGuardId = (uint32)c->_recvBuffer.data.ReadInt16();
-	c->_recvBuffer.data.ReadInt16();
+	uint32 worldMapGuardId = (uint32)c->recvBuffer.data.ReadInt16();
+	c->recvBuffer.data.ReadInt16();
 
-	uint32 worldMapSectionId = c->_recvBuffer.data.ReadInt32();
+	uint32 worldMapSectionId = c->recvBuffer.data.ReadInt32();
 
 
 	//return world_server_process_job_async(
@@ -1950,15 +1943,15 @@ bool WINAPI op_show_inven(std::shared_ptr<connection>c, void* argv[])
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 
-	c->_players[c->_selected_player]->i_.send(1);
+	c->players[c->selected_player]->i_.send(1);
 	return true;
 }
 
 bool WINAPI op_equipe_item(std::shared_ptr<connection> c, void * argv[])
 {
-	std::shared_ptr<player> p = c->_players[c->_selected_player];
-	c->_recvBuffer.data._pos += 8;
-	slot_id s_id = c->_recvBuffer.data.ReadInt32();
+	std::shared_ptr<player> p = c->players[c->selected_player];
+	c->recvBuffer.data._pos += 8;
+	slot_id s_id = c->recvBuffer.data.ReadInt32();
 
 	p->i_.equipe_item(s_id);
 	return true;
@@ -1966,14 +1959,14 @@ bool WINAPI op_equipe_item(std::shared_ptr<connection> c, void * argv[])
 
 bool WINAPI op_unequipe_item(std::shared_ptr<connection> c, void * argv[])
 {
-	std::shared_ptr<player> p = c->_players[c->_selected_player];
+	std::shared_ptr<player> p = c->players[c->selected_player];
 
-	uint32 pid = c->_recvBuffer.data.ReadInt32();
-	uint32 psid = c->_recvBuffer.data.ReadInt32();
+	uint32 pid = c->recvBuffer.data.ReadInt32();
+	uint32 psid = c->recvBuffer.data.ReadInt32();
 
-	uint32 profile_slot_id = c->_recvBuffer.data.ReadInt32();
-	uint32 inventory_slot_id = c->_recvBuffer.data.ReadInt32();
-	item_eid i_eid = c->_recvBuffer.data.ReadInt32();
+	uint32 profile_slot_id = c->recvBuffer.data.ReadInt32();
+	uint32 inventory_slot_id = c->recvBuffer.data.ReadInt32();
+	item_eid i_eid = c->recvBuffer.data.ReadInt32();
 
 	p->i_.unequipe_item(profile_slot_id);
 
@@ -1986,10 +1979,10 @@ bool WINAPI op_dungeon_clear_count_list(std::shared_ptr<connection> c, void * ar
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 
-	c->_recvBuffer.data.Clear();
-	c->_recvBuffer.data.Resize(8);
-	c->_recvBuffer.data.WriteInt16(8);
-	c->_recvBuffer.data.WriteInt16(S_DUNGEON_CLEAR_COUNT_LIST);
+	c->recvBuffer.data.Clear();
+	c->recvBuffer.data.Resize(8);
+	c->recvBuffer.data.WriteInt16(8);
+	c->recvBuffer.data.WriteInt16(S_DUNGEON_CLEAR_COUNT_LIST);
 	//0
 	return connection_send(c);
 }
@@ -2000,10 +1993,10 @@ bool WINAPI op_dungeon_cooltime_list(std::shared_ptr<connection> c, void * argv[
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 
-	c->_recvBuffer.data.Clear();
-	c->_recvBuffer.data.Resize(8);
-	c->_recvBuffer.data.WriteInt16(8);
-	c->_recvBuffer.data.WriteInt16(S_DUNGEON_COOL_TIME_LIST);
+	c->recvBuffer.data.Clear();
+	c->recvBuffer.data.Resize(8);
+	c->recvBuffer.data.WriteInt16(8);
+	c->recvBuffer.data.WriteInt16(S_DUNGEON_COOL_TIME_LIST);
 	//0
 	return connection_send(c);
 }
@@ -2014,10 +2007,10 @@ bool WINAPI op_request_user_itemlevel_info(std::shared_ptr<connection> c, void *
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 
-	c->_recvBuffer.data.Clear();
-	c->_recvBuffer.data.Resize(12);
-	c->_recvBuffer.data.WriteInt16(12);
-	c->_recvBuffer.data.WriteInt16(S_USER_ITEMLEVEL_INFO);
+	c->recvBuffer.data.Clear();
+	c->recvBuffer.data.Resize(12);
+	c->recvBuffer.data.WriteInt16(12);
+	c->recvBuffer.data.WriteInt16(S_USER_ITEMLEVEL_INFO);
 
 	return connection_send(c);
 }
@@ -2028,7 +2021,7 @@ bool WINAPI op_npc_guild_list(std::shared_ptr<connection> c, void* argv[])
 	printf("RECV OP[%s]\n", __FUNCTION__);
 #endif
 
-	Stream * data = &c->_recvBuffer.data;
+	Stream * data = &c->recvBuffer.data;
 	int16 name_offset = data->ReadInt16();
 	data->_pos = name_offset - 4;
 	char player_name[SC_PLAYER_NAME_MAX_LENGTH];
@@ -2043,7 +2036,7 @@ bool WINAPI op_npc_guild_list(std::shared_ptr<connection> c, void* argv[])
 	data->WriteInt16(0); //count
 	data->WriteInt16(0);
 
-	data->WriteWorldId(c->_players[c->_selected_player]);
+	data->WriteWorldId(c->players[c->selected_player]);
 	//
 	//data->WriteInt16(16); //count
 	//data->WriteInt16(0);
@@ -2064,45 +2057,50 @@ bool WINAPI op_view_battlefield_result(std::shared_ptr<connection>c, void * argv
 	return true;
 }
 
-bool WINAPI op_chat(std::shared_ptr<connection> c, void * argv[])
-{
-	std::shared_ptr<player> p = c->_players[c->_selected_player];
+bool WINAPI op_chat(std::shared_ptr<connection> c, void * argv[]) {
+	std::shared_ptr<player> p = c->players[c->selected_player];
 
-	int16 text_offset = c->_recvBuffer.data.ReadInt16();
-	e_chat_type type = (e_chat_type)c->_recvBuffer.data.ReadInt32();
+	int16 text_offset = c->recvBuffer.data.ReadInt16();
+	e_chat_type type = (e_chat_type)c->recvBuffer.data.ReadInt32();
 
-	c->_recvBuffer.data._pos = text_offset - 4;
-	std::string text = c->_recvBuffer.data.ReadUTF16StringBigEdianToASCII();
+	c->recvBuffer.data._pos = text_offset - 4;
+	std::string text = c->recvBuffer.data.ReadUTF16StringBigEdianToASCII();
 
-	if (config::chat.run)
-		chat_process_message_async(new chat_message(type, p, text, c->_account.isGm ? 0x01 : 0x00));
-	else
-	{
-		//TODO : send 'server_chat is down'
-	}
+	//if (config::chat.run)
+	//	chat_process_message_async(new chat_message(type, p, text, c->account.isGm ? 0x01 : 0x00));
+	//else
+	//{
+	//	//TODO : send 'server_chat is down'
+	//}
+
+	Stream data;
+	data.WriteUInt32(type);
+	data.WriteString(text);
+	data.WriteUInt64(timer_get_current_UTC());
+	w_server_get_visible_list_async(c, IO_CHAT, data);
 	return true;
 }
 
 bool WINAPI op_del_item(std::shared_ptr<connection> c, void * argv[])
 {
-	c->_recvBuffer.data._pos = 8;
-	uint32 slot = c->_recvBuffer.data.ReadUInt32();
-	uint32 stack = c->_recvBuffer.data.ReadUInt32();
-	c->_players[c->_selected_player]->i_.lock();
-	c->_players[c->_selected_player]->i_.inventory_slots[slot]._item->stackCount -= stack;
-	if (c->_players[c->_selected_player]->i_.inventory_slots[slot]._item->stackCount <= 0) {
-		slot_wipe(c->_players[c->_selected_player]->i_.inventory_slots[slot]);
+	c->recvBuffer.data._pos = 8;
+	uint32 slot = c->recvBuffer.data.ReadUInt32();
+	uint32 stack = c->recvBuffer.data.ReadUInt32();
+	c->players[c->selected_player]->i_.lock();
+	c->players[c->selected_player]->i_.inventory_slots[slot]._item->stackCount -= stack;
+	if (c->players[c->selected_player]->i_.inventory_slots[slot]._item->stackCount <= 0) {
+		slot_wipe(c->players[c->selected_player]->i_.inventory_slots[slot]);
 	}
-	c->_players[c->_selected_player]->i_.unlock();
-	c->_players[c->_selected_player]->i_.send();
+	c->players[c->selected_player]->i_.unlock();
+	c->players[c->selected_player]->i_.send();
 	return true;
 }
 
 bool WINAPI op_show_item_tooltip_ex(std::shared_ptr<connection> c, void * argv[])
 {
-	uint16 name_offset = c->_recvBuffer.data.ReadUInt16();
-	uint32 type = c->_recvBuffer.data.ReadUInt32();
-	item_eid eid = c->_recvBuffer.data.ReadUInt64();
+	uint16 name_offset = c->recvBuffer.data.ReadUInt16();
+	uint32 type = c->recvBuffer.data.ReadUInt32();
+	item_eid eid = c->recvBuffer.data.ReadUInt64();
 
 	//uint32 unk1 = data->ReadUInt32();
 	//uint32 unk2 = data->ReadUInt32();
@@ -2113,18 +2111,18 @@ bool WINAPI op_show_item_tooltip_ex(std::shared_ptr<connection> c, void * argv[]
 	//data->_pos = name_offset - 4;
 	//std::string player_name = std::move(data->ReadUTF16StringBigEdianToASCII());
 
-	send_item_tooltip(c->_players[c->_selected_player], eid, type);
+	send_item_tooltip(c->players[c->selected_player], eid, type);
 	return true;
 }
 
 bool WINAPI op_move_inven_pos(std::shared_ptr<connection> c, void * argv[])
 {
-	std::shared_ptr<player> p = c->_players[c->_selected_player];
+	std::shared_ptr<player> p = c->players[c->selected_player];
 
-	entityId p_eid = c->_recvBuffer.data.ReadUInt64();
+	entityId p_eid = c->recvBuffer.data.ReadUInt64();
 
-	uint32 s_0 = c->_recvBuffer.data.ReadUInt32();
-	uint32 s_1 = c->_recvBuffer.data.ReadUInt32();
+	uint32 s_0 = c->recvBuffer.data.ReadUInt32();
+	uint32 s_1 = c->recvBuffer.data.ReadUInt32();
 
 	if (p->i_.move_item(s_0, s_1))
 		p->i_.send();
@@ -2136,19 +2134,19 @@ bool WINAPI op_move_inven_pos(std::shared_ptr<connection> c, void * argv[])
 //--------------------------------------------------------------CONTRACT
 bool WINAPI op_request_contract(std::shared_ptr<connection> c, void * argv[])
 {
-	c->_recvBuffer.data._pos = 6;
-	e_contract_type c_t = (e_contract_type)c->_recvBuffer.data.ReadUInt32();
-	c->_recvBuffer.data.SetFront();
+	c->recvBuffer.data._pos = 6;
+	e_contract_type c_t = (e_contract_type)c->recvBuffer.data.ReadUInt32();
+	c->recvBuffer.data.SetFront();
 
-	c->_players[c->_selected_player]->c_manager.request_contract(c_t, c->_recvBuffer.data);
+	c->players[c->selected_player]->c_manager.request_contract(c_t, c->recvBuffer.data);
 
 	return true;
 }
 
 bool WINAPI op_cancel_contract(std::shared_ptr<connection> c, void * argv[])
 {
-	e_contract_type c_t = (e_contract_type)c->_recvBuffer.data.ReadUInt32();
-	contract * b_c = c->_players[c->_selected_player]->c_manager.get_contract(c_t);
+	e_contract_type c_t = (e_contract_type)c->recvBuffer.data.ReadUInt32();
+	contract * b_c = c->players[c->selected_player]->c_manager.get_contract(c_t);
 	if (b_c) {
 		b_c->cancel();
 	}
@@ -2157,9 +2155,9 @@ bool WINAPI op_cancel_contract(std::shared_ptr<connection> c, void * argv[])
 
 bool WINAPI op_bind_item_begin_progress(std::shared_ptr<connection> c, void * argv[])
 {
-	uint32 unk = c->_recvBuffer.data.ReadUInt32();
+	uint32 unk = c->recvBuffer.data.ReadUInt32();
 
-	bind_contract * t = (bind_contract*)c->_players[c->_selected_player]->c_manager.get_contract(BIND_CONTRACT);
+	bind_contract * t = (bind_contract*)c->players[c->selected_player]->c_manager.get_contract(BIND_CONTRACT);
 	if (t) {
 		t->begin(unk);
 	}
@@ -2169,9 +2167,9 @@ bool WINAPI op_bind_item_begin_progress(std::shared_ptr<connection> c, void * ar
 
 bool WINAPI op_bind_item_execute(std::shared_ptr<connection> c, void * argv[])
 {
-	uint32 unk = c->_recvBuffer.data.ReadUInt32();
+	uint32 unk = c->recvBuffer.data.ReadUInt32();
 
-	bind_contract * t = (bind_contract*)c->_players[c->_selected_player]->c_manager.get_contract(BIND_CONTRACT);
+	bind_contract * t = (bind_contract*)c->players[c->selected_player]->c_manager.get_contract(BIND_CONTRACT);
 	if (t) {
 		t->execute(unk);
 	}
@@ -2181,13 +2179,13 @@ bool WINAPI op_bind_item_execute(std::shared_ptr<connection> c, void * argv[])
 
 bool WINAPI op_execute_temper(std::shared_ptr<connection> c, void * argv[])
 {
-	enchant_contract * contract = (enchant_contract*)c->_players[c->_selected_player]->c_manager.get_contract(ENCHANT_CONTRACT);
+	enchant_contract * contract = (enchant_contract*)c->players[c->selected_player]->c_manager.get_contract(ENCHANT_CONTRACT);
 	if (contract) {
 		contract->try_enchant();
 	}
 	else
-		if (c->_account.isGm) {
-			chat_send_simple_system_message("ERROR 10005 [ITEM ENCHANT FAILED]", c->_players[c->_selected_player]);
+		if (c->account.isGm) {
+			chat_send_simple_system_message("ERROR 10005 [ITEM ENCHANT FAILED]", c->players[c->selected_player]);
 		}
 
 	return true;
@@ -2195,13 +2193,13 @@ bool WINAPI op_execute_temper(std::shared_ptr<connection> c, void * argv[])
 
 bool WINAPI op_cancel_temper(std::shared_ptr<connection> c, void * argv[])
 {
-	enchant_contract * contract = (enchant_contract*)c->_players[c->_selected_player]->c_manager.get_contract(ENCHANT_CONTRACT);
+	enchant_contract * contract = (enchant_contract*)c->players[c->selected_player]->c_manager.get_contract(ENCHANT_CONTRACT);
 	if (contract) {
 		contract->cancel_temper();
 	}
 	else
-		if (c->_account.isGm) {
-			chat_send_simple_system_message("ERROR 10006 [op_cancel_temper]", c->_players[c->_selected_player]);
+		if (c->account.isGm) {
+			chat_send_simple_system_message("ERROR 10006 [op_cancel_temper]", c->players[c->selected_player]);
 		}
 
 	return true;
@@ -2209,37 +2207,37 @@ bool WINAPI op_cancel_temper(std::shared_ptr<connection> c, void * argv[])
 
 bool WINAPI op_play_execute_temper(std::shared_ptr<connection> c, void * argv[])
 {
-	send_social(12, c->_players[c->_selected_player]);
+	send_social(12, c->players[c->selected_player]);
 	return true;
 }
 
 bool WINAPI op_add_to_temper_material_ex(std::shared_ptr<connection> c, void * argv[])
 {
-	uint32 slot = c->_recvBuffer.data.ReadUInt32();
-	uint32 i_eid = c->_recvBuffer.data.ReadUInt32();
-	uint32 unk = c->_recvBuffer.data.ReadUInt32();
-	uint32 i_id = c->_recvBuffer.data.ReadUInt32();
-	uint32 count = c->_recvBuffer.data.ReadUInt32();
+	uint32 slot = c->recvBuffer.data.ReadUInt32();
+	uint32 i_eid = c->recvBuffer.data.ReadUInt32();
+	uint32 unk = c->recvBuffer.data.ReadUInt32();
+	uint32 i_id = c->recvBuffer.data.ReadUInt32();
+	uint32 count = c->recvBuffer.data.ReadUInt32();
 
-	enchant_contract * contract = (enchant_contract*)c->_players[c->_selected_player]->c_manager.get_contract(ENCHANT_CONTRACT);
+	enchant_contract * contract = (enchant_contract*)c->players[c->selected_player]->c_manager.get_contract(ENCHANT_CONTRACT);
 	if (contract) {
 		if (slot == 0) {
 			if (!contract->add_item_to_enchant(unk, i_eid, 0, 0)) {
-				if (c->_account.isGm) {
-					chat_send_simple_system_message("ERROR 10002 [ADD ITEM TO ENCHANT FAILED]", c->_players[c->_selected_player]);
+				if (c->account.isGm) {
+					chat_send_simple_system_message("ERROR 10002 [ADD ITEM TO ENCHANT FAILED]", c->players[c->selected_player]);
 				}
 			}
 		}
 		else if (slot == 1 || slot == 2) {
 			if (!contract->add_material_to_enchant_process(i_eid, count, slot)) {
-				if (c->_account.isGm) {
-					chat_send_simple_system_message("ERROR 10003 [ADD MATERIAL ITEM " + std::to_string(slot) + " TO ENCHANT FAILED]", c->_players[c->_selected_player]);
+				if (c->account.isGm) {
+					chat_send_simple_system_message("ERROR 10003 [ADD MATERIAL ITEM " + std::to_string(slot) + " TO ENCHANT FAILED]", c->players[c->selected_player]);
 				}
 			}
 		}
 		else {
-			if (c->_account.isGm) {
-				chat_send_simple_system_message("ERROR 10004 [UNK SLOT ID:" + std::to_string(slot) + "]", c->_players[c->_selected_player]);
+			if (c->account.isGm) {
+				chat_send_simple_system_message("ERROR 10004 [UNK SLOT ID:" + std::to_string(slot) + "]", c->players[c->selected_player]);
 			}
 		}
 	}
@@ -2248,7 +2246,7 @@ bool WINAPI op_add_to_temper_material_ex(std::shared_ptr<connection> c, void * a
 
 bool WINAPI op_check_unidentify_items(std::shared_ptr<connection> c, void * argv[])
 {
-	Stream &data = c->_recvBuffer.data;
+	Stream &data = c->recvBuffer.data;
 	uint32 scrollEId = data.ReadUInt32();
 	uint32 unk2 = data.ReadUInt32();
 	uint32 scrollItemId = data.ReadUInt32(); //Master Enigmatic Scroll|Noble Enigmatic Scroll...
@@ -2259,7 +2257,7 @@ bool WINAPI op_check_unidentify_items(std::shared_ptr<connection> c, void * argv
 	uint32 unk8 = data.ReadUInt32();
 	uint32 itemId = data.ReadUInt32();
 
-	enigmatic_contract* con = (enigmatic_contract*)c->_players[c->_selected_player]->c_manager.get_contract(ENIGMATIC_CONTRACT);
+	enigmatic_contract* con = (enigmatic_contract*)c->players[c->selected_player]->c_manager.get_contract(ENIGMATIC_CONTRACT);
 	if (con) {
 		if (!con->add_item(itemEId, scrollItemId, identifyScrollItemId))
 			con->cancel();
@@ -2271,16 +2269,16 @@ bool WINAPI op_check_unidentify_items(std::shared_ptr<connection> c, void * argv
 bool WINAPI op_random_passive_lock(std::shared_ptr<connection> c, void * argv[])
 {
 	std::vector<uint32> passivities;
-	uint16 count = c->_recvBuffer.data.ReadUInt16();
-	uint16 next = c->_recvBuffer.data.ReadUInt16();
+	uint16 count = c->recvBuffer.data.ReadUInt16();
+	uint16 next = c->recvBuffer.data.ReadUInt16();
 
-	c->_recvBuffer.data._pos = next - 4;
-	for (uint16 i = 0; i < count; i++){
-		c->_recvBuffer.data._pos += 4;
-		passivities.push_back(c->_recvBuffer.data.ReadUInt32());
+	c->recvBuffer.data._pos = next - 4;
+	for (uint16 i = 0; i < count; i++) {
+		c->recvBuffer.data._pos += 4;
+		passivities.push_back(c->recvBuffer.data.ReadUInt32());
 	}
 
-	enigmatic_contract* con = (enigmatic_contract*)c->_players[c->_selected_player]->c_manager.get_contract(ENIGMATIC_CONTRACT);
+	enigmatic_contract* con = (enigmatic_contract*)c->players[c->selected_player]->c_manager.get_contract(ENIGMATIC_CONTRACT);
 	if (con) {
 		con->lock_passivity(passivities);
 	}
@@ -2290,7 +2288,7 @@ bool WINAPI op_random_passive_lock(std::shared_ptr<connection> c, void * argv[])
 
 bool WINAPI op_unidentify_execute(std::shared_ptr<connection> c, void * argv[])
 {
-	enigmatic_contract* con = (enigmatic_contract*)c->_players[c->_selected_player]->c_manager.get_contract(ENIGMATIC_CONTRACT);
+	enigmatic_contract* con = (enigmatic_contract*)c->players[c->selected_player]->c_manager.get_contract(ENIGMATIC_CONTRACT);
 	if (con) {
 		con->execute();
 	}

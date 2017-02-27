@@ -94,6 +94,7 @@ public:
 	
 	//MISC_**************************************************
 	void				Clear();
+	void				Zero();
 	uint16				SetEnd();
 	uint16				SetFront();
 	uint16				NextPos();

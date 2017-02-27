@@ -9,6 +9,7 @@
 #include <sstream>
 
 #include "p_processor.h"
+#include "arbiter_server.h"
 
 void player::update(double dt, double elapsed)
 {
@@ -193,47 +194,11 @@ void player::unlock_stats()
 	LeaveCriticalSection(&stats_lock);
 }
 
-void player::save(sql::Connection * sqlCon)
-{
 
-	try
-	{
-		sql::PreparedStatement *ps = sqlCon->prepareStatement("UPDATE players SET x=?, y=?, z=?, h=?, exp=?, restedExp=?, areaId=?, level=?, lastOnlineUTC=?, worldMapGuardId=?, worldMapWorldId=?, worldMapSectionId=?, channel=? WHERE name=?");
-		ps->setDouble(1, this->position.x);
-		ps->setDouble(2, this->position.y);
-		ps->setDouble(3, this->position.z);
-		ps->setInt(4, this->position.heading);
-		ps->setInt64(5, this->exp);
-		ps->setInt64(6, this->restedExp);
-		ps->setInt(7, this->position.continent_id);
-		ps->setInt(8, this->level);
-		ps->setInt64(9, timer_get_current_UTC());
-		ps->setInt(10, this->position.worldMapGuardId);
-		ps->setInt(11, this->position.worldMapWorldId);
-		ps->setInt(12, this->position.worldMapSectionId);
-		ps->setInt(13, this->position.channel);
-		ps->setString(14, this->name);
-		ps->execute();
-
-		ps = sqlCon->prepareStatement("UPDATE player_inventory SET items=?, slotCount=?, gold=? WHERE name=?");
-		std::istringstream invBlob = std::istringstream(std::string((const char*)this->i_.get_raw()->_raw, this->i_.get_raw()->_size));
-		ps->setBlob(1, &invBlob);
-		ps->setInt(2, this->i_.slot_count);
-		ps->setInt64(3, this->i_.gold);
-		ps->setString(4, this->name);
-		ps->execute();
-	}
-	catch(sql::SQLException &e)
-	{
-		printf("SQL-ERROR-[%s] FUNC[%s]\n", e.what(), __FUNCTION__);
-	}
-}
 
 
 player::player(entityId eid, uint32 db_id, std::shared_ptr<connection> c) :entity(eid), dbid(db_id), i_(inventory())
 {
-	p_c_a = p_c_c_id = p_c_s = p_c_z = 0;
-	channel = 0;
 	con = std::move(c);
 	exp = restedExp = 0;
 	level = 1;
@@ -263,7 +228,7 @@ void WINAPI player_load_user_settings(std::shared_ptr<player> p, sql::Connection
 	try
 	{
 		sql::PreparedStatement *p_s = con->prepareStatement("SELECT * FROM player_settings WHERE username=? AND name=?");
-		p_s->setString(1, p->con->_account.username);
+		p_s->setString(1, p->con->account.username);
 		p_s->setString(2, p->name);
 
 		sql::ResultSet* r_s = p_s->executeQuery();
@@ -297,7 +262,7 @@ void WINAPI player_load_user_settings(std::shared_ptr<player> p, sql::Connection
 	return;
 }
 
-bool WINAPI player_send_external_change(std::shared_ptr<player> p, byte broadcast)
+bool WINAPI player_send_external_change(std::shared_ptr<player> p, std::vector<uint32> & p_l)
 {
 	Stream data;
 	data.Resize(117);
@@ -326,12 +291,17 @@ bool WINAPI player_send_external_change(std::shared_ptr<player> p, byte broadcas
 	data.WriteUInt32(0); //costume dye
 	data.WriteUInt8(1); //enables skin, hair adornment, mask, and costume (back is always on)
 
-	if (broadcast) p->spawn.bordacast(&data);
+	for (size_t i = 0; i < p_l.size(); i++) {
+		arbiter_send(p_l[i], &data);
+	}
+
 	return connection_send(p->con, &data);
 }
 
 void WINAPI player_write_spawn_packet(std::shared_ptr<player> p, Stream & data_m)
 {
+	if (!p) return;
+
 	data_m.WriteInt16(0);
 	data_m.WriteInt16(S_SPAWN_USER);
 
@@ -347,12 +317,15 @@ void WINAPI player_write_spawn_packet(std::shared_ptr<player> p, Stream & data_m
 	uint16 details2Pos = data_m.NextPos();
 	data_m.WriteInt16(64);
 
-	data_m.WriteSpawnId(p);
+	
+	data_m.WriteInt32(SERVER_ID);
+	data_m.WriteInt32(p->dbid);
+	data_m.WriteWorldId(p);
 
-	data_m.WriteFloat(p->position.x.load());
-	data_m.WriteFloat(p->position.y.load());
-	data_m.WriteFloat(p->position.z.load());
-	data_m.WriteInt16(p->position.heading.load());
+	data_m.WriteFloat(a_load(p->x));
+	data_m.WriteFloat(a_load(p->y));
+	data_m.WriteFloat(a_load(p->z));
+	data_m.WriteInt16(a_load(p->w));
 
 	data_m.WriteInt32(1); //relation ?? enemy / party member ... { 1 = 0 = neutral , 2=party member 3 = enemy, 4 = [orange title?],5 =enemy2?, 6 =[title darker], 7=raid leader? 8=enemye3?,
 						  //9 =raid leader?, [light blue] 10=[green title]?, 11=raid leader?, 12 =[DARKx2 title]?, 13=[DARKx2 title]?, 14=1? [...] }

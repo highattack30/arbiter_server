@@ -1,5 +1,4 @@
 #include "arbiter_server.h"
-#include "world_server.h"
 #include "config.h"
 #include "connexion.h"
 #include "job.h"
@@ -10,11 +9,13 @@
 #include "inventory.h"
 #include "servertime.h"
 #include "continent.h"
-#include "active_server.h"
+#include "world_server_handler.h"
 
 bool WINAPI arbiter_server_init() {
 
 	InitializeCriticalSection(&a_server.log_sync);
+	a_server.clients[0] = std::make_shared<connection>(0, 0);
+	memset(a_server.clients[0].get(), 0, sizeof(connection));
 
 	a_server.noOfThreads = config::server.arbiter_no_of_threads;
 	a_server.worker_threads = new a_worker_thread[a_server.noOfThreads];
@@ -39,7 +40,7 @@ bool WINAPI arbiter_server_init() {
 	/*-----------------------------------------------------------*/
 	a_server.listenerData.sin_addr.S_un.S_addr = config::net.localhost ? INADDR_ANY : inet_addr(config::net.ip);
 	a_server.listenerData.sin_family = AF_INET;
-	a_server.listenerData.sin_port = htons(config::net.port); // config.net.port
+	a_server.listenerData.sin_port = htons(config::net.port);
 
 	if (
 		((a_server.listeningSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET) ||
@@ -115,28 +116,22 @@ bool WINAPI arbiter_server_connexion_add(SOCKET sock, sockaddr_in sockData)
 	return false;
 }
 
-bool WINAPI arbiter_server_connexion_remove(uint32 id)
-{
+bool WINAPI arbiter_server_connexion_remove(uint32 id) {
 	if (id >= SBS_SERVER_MAX_CLIENTS)
 		return false;
-	std::shared_ptr<connection> c = NULL;
-
-	{
-		std::lock_guard<std::mutex> locker(a_server.clientListMutex);
-		if (a_server.clients[id])
+	std::shared_ptr<connection> c = a_server.clients[id];
+	if (c) {
+		if (!c->inLobby)
 		{
-			c = a_server.clients[id];
-			a_server.clients[id] = nullptr;
+
+			//active_remove_player(c->_players[c->_selected_player]);
+
+			return w_server_remove_player(c);
 		}
 
-	}
-
-	if (c)
-	{
-		if (!c->_inLobby)
 		{
-			world_server_process_job_async(new j_exit_world(c->_players[c->_selected_player]), J_W_PLAYER_EXIT_WORLD);
-			active_remove_player(c->_players[c->_selected_player]);
+			std::lock_guard<std::mutex> locker(a_server.clientListMutex);
+			a_server.clients[id] = nullptr;
 		}
 
 		connection_close(c);
@@ -160,23 +155,27 @@ void server_unlock_log()
 	LeaveCriticalSection(&a_server.log_sync);
 }
 
+HANDLE WINAPI arbiter_get_iocp() {
+	return a_server.server_iocp;
+}
+
 bool WINAPI arbiter_server_process_job_async(void* j, e_job_type type)
 {
 	if (!j) return false;
-	job* newJob = new job(j, type);
+	std::unique_ptr<job>newJob = std::make_unique<job>(j, type);
 
-	j_enter_world_fin * f = (j_enter_world_fin*)j;
-
-	BOOL result = PostQueuedCompletionStatus(a_server.server_iocp, 1, NULL, (LPOVERLAPPED)newJob);
+	BOOL result = PostQueuedCompletionStatus(a_server.server_iocp, 1, NULL, (LPOVERLAPPED)newJob.get());
 	if (!result)
 	{
-		delete newJob;
 		a_server.no_of_droped_jobs++;
 
 #ifdef _DEBUG
 		printf("ARBITER DROPPED JOB! TYPE[%d]  TOTAL_DROPPED_COUNT[%d]\n", type, a_server.no_of_droped_jobs);
 #endif
 	}
+	else
+		newJob.release();
+
 	return result ? true : false;
 }
 
@@ -196,7 +195,7 @@ DWORD WINAPI arbiter_server_worker_func(void* argv)
 		return 1;
 	}
 
-	while (WAIT_OBJECT_0 != WaitForSingleObject(a_server.shutdownEvent, 0))
+	while (1)
 	{
 		BOOL retVal = GetQueuedCompletionStatusEx(a_server.server_iocp, (LPOVERLAPPED_ENTRY)this_->j_c,
 			config::server.arbiter_job_pull_cout, &this_->out_jobs, INFINITE, false);
@@ -204,8 +203,6 @@ DWORD WINAPI arbiter_server_worker_func(void* argv)
 		if (WAIT_OBJECT_0 == WaitForSingleObject(a_server.shutdownEvent, 0) || ERROR_ABANDONED_WAIT_0 == WSAGetLastError())
 			break;
 
-		if (!this_->j_c) continue;
-	
 		for (uint32 i = 0; i < this_->out_jobs; i++)
 		{
 			this_->noOfBytesTransfered = this_->j_c[i].dwNumberOfBytesTransferred;
@@ -235,11 +232,11 @@ DWORD WINAPI arbiter_server_worker_func(void* argv)
 							{
 								result = connexion_fill_key(j_->con, 1);
 								if (result)
-									result = j_->con->_session->send_server_key(j_->con->_socket, 1);
+									result = j_->con->session->send_server_key(j_->con->socket, 1);
 
 								if (result)
 								{
-									j_->con->_recvBuffer.recvStatus = CP_KEY_2;
+									j_->con->recvBuffer.recvStatus = CP_KEY_2;
 									result = connection_recv(j_->con);
 								}
 							}break;
@@ -249,14 +246,14 @@ DWORD WINAPI arbiter_server_worker_func(void* argv)
 
 								result = connexion_fill_key(j_->con, 3);
 								if (result)
-									result = j_->con->_session->send_server_key(j_->con->_socket, 2);
+									result = j_->con->session->send_server_key(j_->con->socket, 2);
 								if (result)
 									result = connexion_crypt_init(j_->con);
 								if (result)
 								{
-									j_->con->_recvBuffer.data.Clear();
-									j_->con->_recvBuffer.data.Resize(4);
-									j_->con->_recvBuffer.recvStatus = CP_TERA_PACKET_HEAD;
+									j_->con->recvBuffer.data.Clear();
+									j_->con->recvBuffer.data.Resize(4);
+									j_->con->recvBuffer.recvStatus = CP_TERA_PACKET_HEAD;
 									result = connection_recv(j_->con);
 								}
 							}
@@ -264,14 +261,14 @@ DWORD WINAPI arbiter_server_worker_func(void* argv)
 
 							if (!result)
 							{
-								printf("CONNEXION LOST:[%d]\n", j_->con->_id);
-								arbiter_server_connexion_remove(j_->con->_id);
+								printf("CONNEXION LOST:[%d]\n", j_->con->id);
+								arbiter_server_connexion_remove(j_->con->id);
 							}
 						}
 						else
 						{
-							printf("CONNEXION LOST:[%d]\n", j_->con->_id);
-							arbiter_server_connexion_remove(j_->con->_id);
+							printf("CONNEXION LOST:[%d]\n", j_->con->id);
+							arbiter_server_connexion_remove(j_->con->id);
 						}
 					}
 					else
@@ -281,11 +278,17 @@ DWORD WINAPI arbiter_server_worker_func(void* argv)
 
 				}break;
 
-				case J_A_SEND:
-				{
-
+				case J_A_SEND: {
+					//just delete the job ?
 				}break;
 
+					//case J_W_RECV_FROM_WORLD_SERVER_NODE: {
+					//	w_server_process_recv((j_recv_from_node*)j);
+					//}break;
+
+					//case J_W_SEND_TO_WORLD_SERVER_NODE: {
+					//	//just delete the job ?
+					//}break;
 
 				default:
 				{
@@ -351,112 +354,30 @@ void WINAPI arbiter_server_process_job(void* j, e_job_type type, sql::Connection
 {
 	switch (type)
 	{
-	case J_A_BROADCAST:
-	{
-		//Stream * data = (Stream *)j->argv[0];
-		//broadcast_clients * clients = (broadcast_clients*)j->argv[1];
-		//for (uint32 i = 0; i < clients->size(); i++)
-		//{
-		//	if ((*clients)[i] >= 0 && (*clients)[i] < a_server.clientsCount)
-		//		connection_send(a_server.clients[(*clients)[i]], data);
-		//}
-	}break;
-
-	case J_A_BROADCAST_PLAYER_MOVE:
-	{
-		j_b_move * j_ = (j_b_move*)j;
-
-		//Stream data = Stream();
-		//data.Resize(47);
-		//data.WriteInt16(47);
-		//data.WriteInt16(S_USER_LOCATION);
-		//data.WriteWorldId(j_->p_);
-		//data.WriteFloat(j_->p_init[0]);
-		//data.WriteFloat(j_->p_init[1]);
-		//data.WriteFloat(j_->p_init[2]);
-		//data.WriteInt32(j_->p_->position.heading.load());
-		//data.WriteInt16(j_->p_->stats.get_movement_speed(j_->p_->status)); //todo
-		//data.WriteFloat(j_->p_->position.x.load());
-		//data.WriteFloat(j_->p_->position.y.load());
-		//data.WriteFloat(j_->p_->position.z.load());
-		//data.WriteInt32(j_->t_);
-		//data.WriteUInt8(1);
-
-
-
-		j_->p_->spawn.filter(j_->p_m);
-		//j_->p_->spawn.bordacast(&data);
-
-	}break;
-
-	case J_A_BROADCAST_PLAYER_SPAWN:
-	{
-		j_b_spawn* j_ = (j_b_spawn*)j;
-
-		Stream data_y, data_m;
-		player_write_spawn_packet(j_->w_p_, data_m);
-
-		for (size_t i = 0; i < j_->p_l.size(); i++)
-		{
-			data_y.Clear();
-			player_write_spawn_packet(j_->p_l[i], data_y);
-
-			connection_send(j_->p_l[i]->con, &data_m);
-			connection_send(j_->w_p_->con, &data_y);
-		}
-
-		for (size_t i = 0; i < j_->p_l.size(); i++)
-		{
-			j_->w_p_->spawn.add_erase(j_->p_l[i]);
-			j_->p_l[i]->spawn.add_erase(j_->w_p_);
-		}
-
-	}break;
-
-	case J_A_BROADCAST_PLAYER_DESPAWN_ME:
-	{
-		//despawn me from you
-		j_b_despawn_me * j_ = (j_b_despawn_me*)j;
-		j_->p_->spawn.clear();
-	}break;
-
-	case J_A_BROADCAST_PLAYER_DESPAWN:
-	{
-		//despawn me form you and you from me
-		j_b_despawn * j_ = (j_b_despawn*)j;
-		std::shared_ptr<player> me_p = std::move(j_->w_p_);
-		Stream data_y, data_m;
-		data_m.Resize(16);
-		data_m.WriteInt16(16);
-		data_m.WriteInt16(S_DESPAWN_USER);
-		data_m.WriteWorldId(j_->w_p_);
-
-		data_y.Resize(16);
-		data_y.WriteInt16(16);
-		data_y.WriteInt16(S_DESPAWN_USER);
-
-		for (uint32 i = 0; i < j_->p_l.size(); i++)
-		{
-			data_y._pos = 4;
-			data_y.WriteWorldId(j_->p_l[i]);
-
-			connection_send(j_->w_p_->con, &data_y);
-			connection_send(j_->p_l[i]->con, &data_m);
-
-			j_->p_l[i]->spawn.add_erase(j_->w_p_, false);
-			j_->w_p_->spawn.add_erase(j_->p_l[i], false);
-		}
-	}break;
-
-	case J_A_PLAYER_ENTER_WORLD_FIN:
-	{
-		io_load_topo_fin((j_enter_world_fin*)j);
-	}break;
 
 	default:
 		break;
 	}
 
+	return;
+}
+
+std::shared_ptr<player> WINAPI arbiter_get_player(uint32 id) {
+	if (id < SBS_SERVER_MAX_CLIENTS)
+		return a_server.clients[id]->players[a_server.clients[id]->selected_player];
+	return nullptr;
+}
+
+std::shared_ptr<connection> WINAPI arbiter_get_connection(uint32 id) {
+	if (id < SBS_SERVER_MAX_CLIENTS)
+		return a_server.clients[id];
+
+	return nullptr;
+}
+
+void WINAPI arbiter_send(uint32 id, Stream * data) {
+	if (id < SBS_SERVER_MAX_CLIENTS)
+		connection_send(a_server.clients[id], data);
 	return;
 }
 

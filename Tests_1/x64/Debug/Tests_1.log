@@ -1,0 +1,9 @@
+﻿  inventory.cpp
+c:\users\administrator\documents\github\arbiter_server\tests_1\inventory.cpp(113): warning C4018: '>=': signed/unsigned mismatch
+c:\users\administrator\documents\github\arbiter_server\tests_1\inventory.cpp(484): warning C4018: '<=': signed/unsigned mismatch
+c:\users\administrator\documents\github\arbiter_server\tests_1\inventory.cpp(527): warning C4018: '<=': signed/unsigned mismatch
+c:\users\administrator\documents\github\arbiter_server\tests_1\inventory.cpp(755): warning C4018: '>=': signed/unsigned mismatch
+c:\users\administrator\documents\github\arbiter_server\tests_1\inventory.cpp(1141): warning C4267: 'argument': conversion from 'size_t' to 'short', possible loss of data
+c:\users\administrator\documents\github\arbiter_server\tests_1\inventory.cpp(563): warning C4715: 'inventory::get_item': not all control paths return a value
+  Tests_1.vcxproj -> C:\Users\Administrator\Documents\GitHub\arbiter_server\x64\Debug\Tests_1.exe
+  Tests_1.vcxproj -> C:\Users\Administrator\Documents\GitHub\arbiter_server\x64\Debug\Tests_1.pdb (Partial PDB)

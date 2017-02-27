@@ -11,9 +11,8 @@
 #include "inventory.h"
 #include "entity_manager.h"
 #include "stringUtils.h"
-#include "world_server.h"
-#include "active_server.h"
 #include "p_processor.h"
+#include "servertime.h"
 
 bool WINAPI chat_init()
 {
@@ -89,6 +88,10 @@ void WINAPI chat_process_message(chat_message * msg)
 		return;
 	}
 
+	uint64 time = timer_get_current_UTC() - msg->time_stamp;
+	std::string t_s = "|" + std::to_string(time) + "|";
+	msg->msg_.insert(6, t_s.c_str());
+
 	Stream data;
 
 	data.Resize(27);
@@ -110,12 +113,14 @@ void WINAPI chat_process_message(chat_message * msg)
 	data.WriteString(msg->msg_);
 
 	data.WritePos(0);
-
+	
 	switch (msg->t_)
 	{
 	case MAIN_CHAT:
 		connection_send(msg->p_->con, &data);
-		msg->p_->spawn.bordacast(&data);
+		for (size_t i = 0; i < msg->p_l.size(); i++){
+			arbiter_send(msg->p_l[i], &data);
+		}
 		break;
 	case PARTY_CHAT:
 		break;
@@ -189,7 +194,7 @@ bool WINAPI chat_process_gm_commands(chat_message * msg)
 {
 	if (msg->msg_[6] == '.' && msg->msg_[7] == '/')
 	{
-		if (msg->p_->con->_account.isGm)
+		if (msg->p_->con->account.isGm)
 		{
 			std::string cmd;
 			for (size_t i = 8; i < msg->msg_.size() - 7; i++)
@@ -211,7 +216,7 @@ bool WINAPI chat_process_gm_commands(chat_message * msg)
 			{
 				msg->p_->i_.clear();
 				msg->p_->i_.send();
-				player_send_external_change(msg->p_, 1);
+				player_send_external_change(msg->p_, msg->p_l);
 			}
 			else if (stringStartsWith(cmd, "itemc"))
 			{
@@ -233,6 +238,19 @@ bool WINAPI chat_process_gm_commands(chat_message * msg)
 				uint32 a = 0;
 				sscanf_s(cmd.c_str(), "level %d", &a);
 				s_stats_process_progress(msg->p_, a);
+
+
+				std::unique_ptr<Stream> data = std::make_unique<Stream>();
+				data->Clear();
+				data->WriteInt16(16);
+				data->WriteInt16(S_USER_LEVELUP);
+				data->WriteWorldId(msg->p_);
+				data->WriteInt32(msg->p_->level);
+
+				for (size_t i = 0; i < msg->p_l.size(); i++) {
+					arbiter_send(msg->p_l[i], data.get());
+				}
+				connection_send(msg->p_->con, data.get());
 			}
 			else if (stringStartsWith(cmd, "rstats")) {
 				player_recalculate_stats(msg->p_);
@@ -242,7 +260,7 @@ bool WINAPI chat_process_gm_commands(chat_message * msg)
 				player_recalculate_stats(msg->p_);
 
 				player_send_stats(msg->p_);
-				player_send_external_change(msg->p_, 1);
+				player_send_external_change(msg->p_, msg->p_l);
 
 				std::unique_ptr<Stream> data = std::make_unique<Stream>();
 				data->Clear();
@@ -251,7 +269,9 @@ bool WINAPI chat_process_gm_commands(chat_message * msg)
 				data->WriteWorldId(msg->p_);
 				data->WriteInt32(1);
 
-				msg->p_->spawn.bordacast(data.get());
+				for (size_t i = 0; i < msg->p_l.size(); i++){
+					arbiter_send(msg->p_l[i], data.get());
+				}
 				connection_send(msg->p_->con, data.get());
 			}
 			else if (stringStartsWith(cmd, "status"))
@@ -273,7 +293,9 @@ bool WINAPI chat_process_gm_commands(chat_message * msg)
 				data->WriteInt16(0);
 				data->WriteUInt8(0);
 				connection_send(msg->p_->con, data.get());
-				msg->p_->spawn.bordacast(data.get());
+				for (size_t i = 0; i < msg->p_l.size(); i++) {
+					arbiter_send(msg->p_l[0], data.get());
+				}
 			}
 			else if (stringStartsWith(cmd, "conc"))
 			{
@@ -307,14 +329,14 @@ bool WINAPI chat_process_gm_commands(chat_message * msg)
 					msg->p_->i_.refresh_enchat_effect();
 					msg->p_->i_.send(0);
 					player_send_stats(msg->p_);
-					player_send_external_change(msg->p_, 1);
+					player_send_external_change(msg->p_, msg->p_l);
 				}
 			}
-			else if (stringStartsWith(cmd, "plc"))
-			{
-				std::string m = "WORLD_PLAYERS_COUNT[" + std::to_string(world_get_player_count()) + "]";
-				chat_send_simple_system_message(m, msg->p_);
-			}
+			//else if (stringStartsWith(cmd, "plc"))
+			//{
+			//	std::string m = "WORLD_PLAYERS_COUNT[" + std::to_string(world_get_player_count()) + "]";
+			//	chat_send_simple_system_message(m, msg->p_);
+			//}
 			else if (stringStartsWith(cmd, "itmc"))
 			{
 				std::string m = "ITEMS_COUNT[" + std::to_string(entity_manager::item_count()) + "]";
@@ -326,21 +348,21 @@ bool WINAPI chat_process_gm_commands(chat_message * msg)
 
 				message_system_send_simple("@" + std::to_string(id), msg->p_);
 			}
-			else if (stringStartsWith(cmd, "lobby")) {
-				world_server_process_job_async(new j_exit_world(msg->p_), J_W_PLAYER_EXIT_WORLD);
-				active_remove_player(msg->p_);
-
-				Sleep(500);
-				Stream d;
-				d.Resize(4);
-				d.WriteInt16(4);
-				d.WriteInt16(S_RETURN_TO_LOBBY);
-
-
-				connection_send(msg->p_->con, &d);
-				Sleep(100);
-				msg->p_->con->_inLobby = false;
-			}
+			//else if (stringStartsWith(cmd, "lobby")) {
+			//	world_server_process_job_async(new j_exit_world(msg->p_), J_W_PLAYER_EXIT_WORLD);
+			//	active_remove_player(msg->p_);
+			//
+			//	Sleep(500);
+			//	Stream d;
+			//	d.Resize(4);
+			//	d.WriteInt16(4);
+			//	d.WriteInt16(S_RETURN_TO_LOBBY);
+			//
+			//
+			//	connection_send(msg->p_->con, &d);
+			//	Sleep(100);
+			//	msg->p_->con->_inLobby = false;
+			//}
 			else if (stringStartsWith(cmd, "social")) {
 				uint32 id = 0;
 				sscanf_s(cmd.c_str(), "social %d", &id);
@@ -361,7 +383,7 @@ bool WINAPI chat_process_gm_commands(chat_message * msg)
 				msg->p_->i_.send();
 			}
 			else if (stringStartsWith(cmd, "external")) {
-				player_send_external_change(msg->p_, 1);
+				player_send_external_change(msg->p_, msg->p_l);
 			}
 			else if (stringStartsWith(cmd, "roll")) {
 				uint32 slot = 0;
@@ -410,7 +432,11 @@ bool WINAPI chat_process_gm_commands(chat_message * msg)
 
 bool WINAPI chat_process_message_async(chat_message* msg)
 {
-	return PostQueuedCompletionStatus(chat_s.chat_iocp, 1, 0, (LPOVERLAPPED)msg) == TRUE ? true : false;
+	if (!PostQueuedCompletionStatus(chat_s.chat_iocp, 1, 0, (LPOVERLAPPED)msg)) {
+		printf("chat_post_error [%d]\n", GetLastError());
+		return  false;
+	}
+	return true;
 }
 
 void WINAPI chat_send_simple_system_message(std::string msg, std::shared_ptr<player> p)
@@ -429,7 +455,7 @@ void WINAPI send_social(uint32 animation, p_ptr target) {
 	data.WriteUInt8(0); //unk2
 
 	connection_send(target->con, &data);
-	target->spawn.bordacast(&data);
+	//target->spawn.bordacast(&data);
 }
 
 void WINAPI send_social_cancel(p_ptr target) {
@@ -439,7 +465,7 @@ void WINAPI send_social_cancel(p_ptr target) {
 	data.WriteWorldId(target);
 
 	connection_send(target->con, &data);
-	target->spawn.bordacast(&data);
+	//target->spawn.bordacast(&data);
 }
 
 void WINAPI message_system_send_simple(std::string m, std::shared_ptr<player> p) {

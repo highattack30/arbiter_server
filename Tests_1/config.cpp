@@ -1,8 +1,8 @@
 #include "config.h"
 
 #include "stringUtils.h"
+#include "serverEnums.h"
 #include <fstream>
-
 
 
 bool init_config(STRING fileName)
@@ -10,6 +10,15 @@ bool init_config(STRING fileName)
 	std::fstream file = std::fstream(fileName);
 	if (!file.is_open())
 		return false;
+
+	for (uint8 i = 0; i < 16; i++) {
+		config::server.world_server_listening_ip[i] = '0';
+	}
+	config::server.world_server_listening_ip[3] =
+		config::server.world_server_listening_ip[7] =
+		config::server.world_server_listening_ip[11] = '.';
+
+
 	std::string error_message;
 	std::string line;
 	uint32 lineCount = 0;
@@ -101,92 +110,6 @@ bool init_config(STRING fileName)
 				goto error_proc;
 			}
 		}
-		else if (stringStartsWith(line, "server.world.number_of_threads_per_cpu"))
-		{
-			if (!sscanf(line.c_str(), "server.world.number_of_threads_per_cpu= %d", &config::server.world_no_of_threads_per_cpu))
-			{
-				error_message = "bad world_no_of_threads_per_cpu value!";
-				goto error_proc;
-			}
-
-			if (config::server.world_no_of_threads_per_cpu <= 0 ||
-				config::server.world_no_of_threads_per_cpu > 50)
-			{
-				error_message = "value within [1 - 50]!";
-				goto error_proc;
-			}
-		}
-		else if (stringStartsWith(line, "server.world.job_pull_count"))
-		{
-			if (!sscanf(line.c_str(), "server.world.job_pull_count= %d", &config::server.world_job_pull_cout))
-			{
-				error_message = "bad world_job_pull_cout value!";
-				goto error_proc;
-			}
-
-			if (config::server.world_job_pull_cout <= 0 ||
-				config::server.world_job_pull_cout > 32)
-			{
-				error_message = "value within [1 - 32]!";
-				goto error_proc;
-			}
-		}
-		else if (stringStartsWith(line, "server.active.max_number_of_threads"))
-		{
-			if (!sscanf(line.c_str(), "server.active.max_number_of_threads= %d", &config::server.active_max_no_of_threads))
-			{
-				error_message = "bad max_number_of_threads value!";
-				goto error_proc;
-			}
-
-			if (config::server.active_max_no_of_threads <= 0 ||
-				config::server.active_max_no_of_threads > 30)
-			{
-				error_message = "value within [1 - 30]!";
-				goto error_proc;
-			}
-		}
-		else if (stringStartsWith(line, "server.active.max_number_of_players"))
-		{
-			if (!sscanf(line.c_str(), "server.active.max_number_of_players= %d", &config::server.active_max_no_of_players))
-			{
-				error_message = "bad max_number_of_players value!";
-				goto error_proc;
-			}
-
-			if (config::server.active_max_no_of_players <= 0 ||
-				config::server.active_max_no_of_players > 600)
-			{
-				error_message = "value within [1 - 600]!";
-				goto error_proc;
-			}
-		}
-		else if (stringStartsWith(line, "server.active.idle_sleep_time_ms"))
-		{
-			if (!sscanf(line.c_str(), "server.active.idle_sleep_time_ms= %d", &config::server.active_idle_sleep_time_ms))
-			{
-				error_message = "bad idle_sleep_time_ms value!";
-				goto error_proc;
-			}
-			if (config::server.active_idle_sleep_time_ms > 10000)
-			{
-				error_message = "value within [0 - 10000]!";
-				goto error_proc;
-			}
-		}
-		else if (stringStartsWith(line, "server.active.sleep_time_ms"))
-		{
-			if (!sscanf(line.c_str(), "server.active.sleep_time_ms= %d", &config::server.active_sleep_time_ms))
-			{
-				error_message = "bad sleep_time_ms value!";
-				goto error_proc;
-			}
-			if (config::server.active_sleep_time_ms > 5000)
-			{
-				error_message = "value within [0 - 5000]!";
-				goto error_proc;
-			}
-		}
 		else if (stringStartsWith(line, "server.chat.worker_threads_count"))
 		{
 			if (!sscanf(line.c_str(), "server.chat.worker_threads_count= %d", &config::chat.worker_threads_count))
@@ -240,7 +163,7 @@ bool init_config(STRING fileName)
 				goto error_proc;
 			if (value)config::net.localhost = true;
 			else config::net.localhost = false;
-			
+
 		}
 		else if (stringStartsWith(line, "server.ip"))
 		{
@@ -457,10 +380,37 @@ bool init_config(STRING fileName)
 				goto error_proc;
 			}
 		}
+		else if (stringStartsWith(line, "world_server.listening_port"))
+		{
+			if (!sscanf(line.c_str(), "world_server.listening_port= %d", &config::server.world_server_listening_port))
+			{
+				error_message = "bad world_server.listening_port value!";
+				goto error_proc;
+			}
+		}
+		else if (stringStartsWith(line, "world_server.listening_ip"))
+		{
+			int32 ip_part[4];
+			int result = sscanf(line.c_str(), "world_server.listening_ip= %d.%d.%d.%d", &ip_part[0], &ip_part[1], &ip_part[2], &ip_part[3]);
+
+			std::string ip_f = std::to_string(ip_part[0]) + '.' + std::to_string(ip_part[1]) + '.' + std::to_string(ip_part[2]) + '.' + std::to_string(ip_part[3]);
+			if (result != 4 || ip_f.size() >= 16)
+			{
+				error_message = "bad world_server.listening_ip value!";
+				goto error_proc;
+			}
+			
+			strcpy_s(config::server.world_server_listening_ip, 16, ip_f.c_str());
+		}
 
 	}
 
 	file.close();
+
+	config::server.world_server_listening_ip[15] = 0x00;
+
+	if (config::server.world_server_listening_port == 0)
+		config::server.world_server_listening_port = SC_WORLD_LISTENING_PORT;
 
 	return true;
 

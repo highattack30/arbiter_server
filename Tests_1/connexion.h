@@ -41,7 +41,7 @@ struct RECV_BUFFER
 	Stream		data;
 
 	e_connexion_recv_buffer_state recvStatus;
-	uint32 connexion_id;
+	uint32					connexion_id;
 };
 
 class connection
@@ -50,30 +50,29 @@ public:
 	connection(SOCKET sock, uint32 id);
 	~connection();
 
-	std::shared_ptr<player> _players[SC_PLAYER_MAX_CHARACTER_COUNT];
+	float					p_n[6];
+	uint16					p_t[4];
+	Stream					p_s;
+	int32					node_id;
+	std::shared_ptr<player> players[SC_PLAYER_MAX_CHARACTER_COUNT];
+	RECV_BUFFER				recvBuffer;
+	CRITICAL_SECTION		recvLock;
+	CRITICAL_SECTION		sendLock;
+	SOCKET					socket;
+	HANDLE					iocp;
 
-	RECV_BUFFER _recvBuffer;
+	bool					inLobby;
 
-	CRITICAL_SECTION _recvLock;
-	CRITICAL_SECTION _sendLock;
-	SOCKET _socket;
-	HANDLE _iocp;
+	uint32					selected_player,
+							id;
 
-	bool 
-		_inLobby;
-
-	uint32
-		_selected_player,
-		_id,
-		_testId;
-
-	std::atomic<uint16> _peddingPacketCount;
-	uint8 _droppedPacketCount;
-
-
+	std::atomic<uint16>		peddingPacketCount;
+	uint8					droppedPacketCount;
 	
-	account  _account;
-	std::unique_ptr<Session>  _session;
+	
+	
+	account					account;
+	std::unique_ptr<Session>session;
 };
 
 bool WINAPI connection_init(std::shared_ptr<connection> c, HANDLE master_iocp);

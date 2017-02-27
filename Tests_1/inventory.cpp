@@ -278,7 +278,7 @@ bool inventory::equipe_item(slot_id s_id)
 
 		LeaveCriticalSection(&inv_lock);
 
-		player_send_external_change(parent, 1);
+		//player_send_external_change(parent, 1);
 		player_recalculate_inventory_stats(parent);
 		player_send_stats(parent);
 		send();
@@ -304,7 +304,7 @@ bool inventory::unequipe_item(slot_id s_id)
 	inventory_interchange_items(profile_slots[s_id - 1], inventory_slots[i]);
 	LeaveCriticalSection(&inv_lock);
 
-	player_send_external_change(parent, 1);
+	//player_send_external_change(parent, 1);
 	player_recalculate_inventory_stats(parent);
 	player_send_stats(parent);
 	send();
@@ -957,13 +957,13 @@ void WINAPI slot_clear(inventory_slot& s)
 }
 
 
-
+std::atomic_uint64_t eid_pool;
 std::shared_ptr<item> WINAPI inventory_create_item(item_id id)
 {
 	const item_template * t = data_service::data_resolve_item(id);
 	if (!t) return nullptr;
 
-	std::shared_ptr<item> i = entity_manager::create_item();
+	std::shared_ptr<item> i = std::make_shared<item>(++eid_pool);
 
 	i->item_t = t;
 	i->stackCount = 1;

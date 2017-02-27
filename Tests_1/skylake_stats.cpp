@@ -1141,18 +1141,18 @@ void WINAPI s_stats_process_progress(p_ptr p, uint16 new_level)
 
 	p->level = new_level;
 
-	std::unique_ptr<Stream> data = std::make_unique<Stream>();
-	data->Clear();
-	data->WriteInt16(16);
-	data->WriteInt16(S_USER_LEVELUP);
-	data->WriteWorldId(p);
-	data->WriteInt32(new_level);
-
-	p->spawn.bordacast(data.get());
-	connection_send(p->con, data.get());
+	//std::unique_ptr<Stream> data = std::make_unique<Stream>();
+	//data->Clear();
+	//data->WriteInt16(16);
+	//data->WriteInt16(S_USER_LEVELUP);
+	//data->WriteWorldId(p);
+	//data->WriteInt32(new_level);
+	//
+	////p->spawn.bordacast(data.get());
+	//connection_send(p->con, data.get());
 
 	player_send_stats(p);
-	player_send_external_change(p, 1);
+	//player_send_external_change(p, 1);
 	return;
 }
 

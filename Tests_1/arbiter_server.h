@@ -60,8 +60,15 @@ bool WINAPI arbiter_server_connexion_remove(uint32 id);
 void server_lock_log();
 void server_unlock_log();
 
+HANDLE	WINAPI arbiter_get_iocp();
+
 uint64	WINAPI arbiter_get_connection_count();
 
 static void WINAPI arbiter_server_process_job(void* j,e_job_type, sql::Connection * con);
+
+std::shared_ptr<player> WINAPI arbiter_get_player(uint32);
+std::shared_ptr<connection> WINAPI arbiter_get_connection(uint32);
+
+void WINAPI arbiter_send(uint32, Stream*);
 #endif // !SERVERDEFS_H
 

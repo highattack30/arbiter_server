@@ -3,13 +3,13 @@
 
 #include "typeDefs.h"
 
-enum serve_request : ulong
+enum serve_request : uint32
 {
 	NONE = 0,
 	CONNEXION = 1
 };
 
-enum server_contants : ulong
+enum server_contants : uint32
 {
 	SC_PLAYER_NAME_MAX_LENGTH = 38,
 	SC_PLAYER_MAX_CHARACTER_COUNT = 6,
@@ -27,12 +27,22 @@ enum server_contants : ulong
 	SC_INVENTORY_MAX_SLOTS = 104, //8 * 13
 	SC_INVENTORY_MIN_SLOTS = 32, //8 * 4
 	SC_INVENTORY_PROFILE_SLOTS_COUNT = 21,
+
+	SC_MAX_CHANNELS_PER_WORLD_NODE = 10,
+	SC_WORLD_SERVER_MAX_COUNT = 19, //COUNT OF AREAS IN TERA WORLD MAP
+	SC_WORLD_LISTENING_PORT = 2000,
+
+	SC_WORLD_WORKING_THREADS_MAX = 5,
+	SC_WORLD_WORKING_THREADS = 2,
+	SC_WORLD_HANDLER_MAX_NODES = 50,
+	SC_WORLD_NODE_NAME_LENGTH = 32,
 };
 
 enum server_buffer_settings :uint32
 {
 	SBS_SERVER_MAX_CLIENTS = 1000,
 	SBS_CLEINT_SEND_QUEUE_SIZE = 16,
+	SBS_WORLD_HANDLER_TRANSFERE_BUFFER_SIZE = 512,
 };
 
 #endif // 

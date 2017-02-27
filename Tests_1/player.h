@@ -7,7 +7,6 @@
 #include "inventory.h"
 #include "worldposition.h"
 #include "entity.h"
-#include "p_spawn.h"
 #include "skylake_stats.h"
 #include "contract_manager.h"
 
@@ -23,28 +22,30 @@ private:
 	uint32 hp_diff, mp_diff;
 	Stream data;
 public:
-	world_position					position;
 	std::shared_ptr<connection>		con;
 
-	p_spawn							spawn;
-	std::atomic_uint8_t				p_c_s;		//player current section
-	std::atomic_uint8_t				p_c_z;		//player current zone
-	std::atomic_uint8_t				p_c_a;		//player current area
-	std::atomic_uint8_t				p_c_c_id;	//player current contientn id
-	std::atomic_uint8_t				channel;
+	std::atomic<float>				x;
+	std::atomic<float>				y;
+	std::atomic<float>				z;
+	std::atomic<int16>				w;
+
+	uint32							continent_id;
+	uint32							area_id;
+
 	p_stats							stats;
 	p_skills						skills;
 	inventory						i_;
 
 	std::atomic_uint8_t				status;
 
-	std::atomic_uint64_t
-		exp,
-		restedExp;
+	std::atomic_uint64_t			exp,
+									restedExp;
+
 	contract_manager				c_manager;
 
 	uint16							level;
 	uint32							model;
+
 	e_player_class                  pClass;
 	e_player_race					pRace;
 	e_player_gender					pGender;
@@ -65,12 +66,12 @@ public:
 	~player();
 
 private:
-	CRITICAL_SECTION					stats_lock;
+	CRITICAL_SECTION				stats_lock;
 };
 
 uint32 WINAPI				player_calculate_model(e_player_class, e_player_gender, e_player_race);
 void WINAPI					player_load_user_settings(std::shared_ptr<player>, sql::Connection*);
-bool WINAPI					player_send_external_change(std::shared_ptr<player>, byte broadcast = 0x00);
+bool WINAPI					player_send_external_change(std::shared_ptr<player>, std::vector<uint32> &);
 void WINAPI					player_write_spawn_packet(std::shared_ptr<player>, Stream&);
 void WINAPI					player_send_stats(p_ptr);
 void WINAPI					player_recalculate_inventory_stats(p_ptr);

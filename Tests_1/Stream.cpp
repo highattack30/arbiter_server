@@ -421,7 +421,8 @@ std::string Stream::ReadUTF16StringLittleEdianToASCII()
 //SPECIAL_TERA_SERVER_**************************************************
 void Stream::WriteWorldId(std::shared_ptr<player> p)
 {
-	WriteInt64(p->eid);
+	WriteUInt32(p->eid);
+	WriteUInt32(SERVER_ID);
 }
 
 void Stream::WriteSpawnId(std::shared_ptr<player> p, bool login)
@@ -451,6 +452,10 @@ void Stream::Clear()
 	}
 	_size = 0;
 	_pos = 0;
+}
+
+void Stream::Zero(){
+	memset(_raw, 0, sizeof(byte)*_size);
 }
 
 uint16 Stream::SetEnd()

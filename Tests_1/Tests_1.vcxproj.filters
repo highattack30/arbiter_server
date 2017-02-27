@@ -12,9 +12,6 @@
     <Filter Include="Crypt">
       <UniqueIdentifier>{f61c130a-4a7c-476b-b710-a32a356d6e8f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Enums">
-      <UniqueIdentifier>{a3832184-aa5f-4cb2-bb0c-065db1ab0972}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Framework">
       <UniqueIdentifier>{e24a4e1a-110e-4fa9-8192-0faa8a8e98a9}</UniqueIdentifier>
     </Filter>
@@ -40,17 +37,8 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Framework\DataStructs_creature">
-      <UniqueIdentifier>{8156f651-30ba-4541-8256-da4dfa24ea1d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Framework\DataStructs_npc">
-      <UniqueIdentifier>{50b37ab9-a6ef-4ec2-a89a-9781f4f072b1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Framework\DataStructs_player">
       <UniqueIdentifier>{8828a307-af1f-420d-824f-896ef3eecf28}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Framework\DataStructs_world">
-      <UniqueIdentifier>{a8def676-1b35-44e0-9e95-8fdb248ad5d1}</UniqueIdentifier>
     </Filter>
     <Filter Include="chat_server">
       <UniqueIdentifier>{90b491c3-4650-4120-ab32-a45245ada9f5}</UniqueIdentifier>
@@ -81,6 +69,9 @@
     </Filter>
     <Filter Include="Framework\p_processor">
       <UniqueIdentifier>{b2c8b0ba-2f8e-4d55-bbaf-04c304667a47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Enums">
+      <UniqueIdentifier>{27741377-8544-4b8b-ac1f-bdecb125aff0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -132,15 +123,6 @@
     <ClCompile Include="dbHandler.cpp">
       <Filter>Framework\DB</Filter>
     </ClCompile>
-    <ClCompile Include="creature.cpp">
-      <Filter>Framework\DataStructs_creature</Filter>
-    </ClCompile>
-    <ClCompile Include="worldposition.cpp">
-      <Filter>Framework\DataStructs_creature</Filter>
-    </ClCompile>
-    <ClCompile Include="npc.cpp">
-      <Filter>Framework\DataStructs_npc</Filter>
-    </ClCompile>
     <ClCompile Include="servertime.cpp">
       <Filter>Framework\Time</Filter>
     </ClCompile>
@@ -159,34 +141,10 @@
     <ClCompile Include="arbiter_server.cpp">
       <Filter>arbiter_server</Filter>
     </ClCompile>
-    <ClCompile Include="world_server.cpp">
-      <Filter>world_server</Filter>
-    </ClCompile>
     <ClCompile Include="internalOp.cpp">
       <Filter>Opcodes</Filter>
     </ClCompile>
-    <ClCompile Include="continent.cpp">
-      <Filter>Framework\DataStructs_world</Filter>
-    </ClCompile>
     <ClCompile Include="config.cpp" />
-    <ClCompile Include="Bounds.cpp">
-      <Filter>Framework\DataStructs_world</Filter>
-    </ClCompile>
-    <ClCompile Include="colideable.cpp">
-      <Filter>Framework\DataStructs_creature</Filter>
-    </ClCompile>
-    <ClCompile Include="player_rcu.cpp">
-      <Filter>Framework\DataStructs_world</Filter>
-    </ClCompile>
-    <ClCompile Include="p_spawn.cpp">
-      <Filter>Framework\DataStructs_player</Filter>
-    </ClCompile>
-    <ClCompile Include="area.cpp">
-      <Filter>Framework\DataStructs_world</Filter>
-    </ClCompile>
-    <ClCompile Include="zone.cpp">
-      <Filter>Framework\DataStructs_world</Filter>
-    </ClCompile>
     <ClCompile Include="chat.cpp">
       <Filter>chat_server</Filter>
     </ClCompile>
@@ -198,9 +156,6 @@
     </ClCompile>
     <ClCompile Include="entity.cpp">
       <Filter>Framework\entity_manager</Filter>
-    </ClCompile>
-    <ClCompile Include="active_server.cpp">
-      <Filter>active_server</Filter>
     </ClCompile>
     <ClCompile Include="skylake_stats.cpp">
       <Filter>Framework\stats</Filter>
@@ -226,6 +181,12 @@
     <ClCompile Include="enigmatic_contract.cpp">
       <Filter>Framework\contract\contracts</Filter>
     </ClCompile>
+    <ClCompile Include="world_server_handler.cpp">
+      <Filter>world_server</Filter>
+    </ClCompile>
+    <ClCompile Include="w_node_opcodes.cpp">
+      <Filter>Opcodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mathUtils.h">
@@ -246,18 +207,6 @@
     <ClInclude Include="Crypt.hpp">
       <Filter>Crypt</Filter>
     </ClInclude>
-    <ClInclude Include="connexionEnums.h">
-      <Filter>Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="opcodeEnum.h">
-      <Filter>Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="serverEnums.h">
-      <Filter>Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="jobEnums.h">
-      <Filter>Enums</Filter>
-    </ClInclude>
     <ClInclude Include="job.h">
       <Filter>Framework</Filter>
     </ClInclude>
@@ -275,21 +224,6 @@
     </ClInclude>
     <ClInclude Include="DBHandler.h">
       <Filter>Framework\DB</Filter>
-    </ClInclude>
-    <ClInclude Include="playerEnums.h">
-      <Filter>Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="creature.h">
-      <Filter>Framework\DataStructs_creature</Filter>
-    </ClInclude>
-    <ClInclude Include="creatureEnums.h">
-      <Filter>Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="worldposition.h">
-      <Filter>Framework\DataStructs_creature</Filter>
-    </ClInclude>
-    <ClInclude Include="npc.h">
-      <Filter>Framework\DataStructs_npc</Filter>
     </ClInclude>
     <ClInclude Include="servertime.h">
       <Filter>Framework\Time</Filter>
@@ -324,9 +258,6 @@
     <ClInclude Include="equipmentdatatemplate.h">
       <Filter>Framework\Data\Templates</Filter>
     </ClInclude>
-    <ClInclude Include="SkillEnums.h">
-      <Filter>Enums</Filter>
-    </ClInclude>
     <ClInclude Include="passivitycategorytemplate.h">
       <Filter>Framework\Data\Templates</Filter>
     </ClInclude>
@@ -336,58 +267,19 @@
     <ClInclude Include="dataservice.h">
       <Filter>Framework\Data</Filter>
     </ClInclude>
-    <ClInclude Include="equipmentEnums.h">
-      <Filter>Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="itemEnums.h">
-      <Filter>Enums</Filter>
-    </ClInclude>
     <ClInclude Include="inventory.h">
       <Filter>Framework\Inventory</Filter>
     </ClInclude>
     <ClInclude Include="arbiter_server.h">
       <Filter>arbiter_server</Filter>
     </ClInclude>
-    <ClInclude Include="world_server.h">
-      <Filter>world_server</Filter>
-    </ClInclude>
     <ClInclude Include="internalOp.h">
       <Filter>Opcodes</Filter>
-    </ClInclude>
-    <ClInclude Include="worldEnums.h">
-      <Filter>Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="continent.h">
-      <Filter>Framework\DataStructs_world</Filter>
-    </ClInclude>
-    <ClInclude Include="pms.h">
-      <Filter>Framework\DataStructs_world</Filter>
     </ClInclude>
     <ClInclude Include="zonetemplate.h">
       <Filter>Framework\Data\Templates</Filter>
     </ClInclude>
     <ClInclude Include="config.h" />
-    <ClInclude Include="chatEnums.h">
-      <Filter>Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="Bounds.h">
-      <Filter>Framework\DataStructs_world</Filter>
-    </ClInclude>
-    <ClInclude Include="colideable.h">
-      <Filter>Framework\DataStructs_creature</Filter>
-    </ClInclude>
-    <ClInclude Include="player_rcu.h">
-      <Filter>Framework\DataStructs_world</Filter>
-    </ClInclude>
-    <ClInclude Include="p_spawn.h">
-      <Filter>Framework\DataStructs_player</Filter>
-    </ClInclude>
-    <ClInclude Include="area.h">
-      <Filter>Framework\DataStructs_world</Filter>
-    </ClInclude>
-    <ClInclude Include="zone.h">
-      <Filter>Framework\DataStructs_world</Filter>
-    </ClInclude>
     <ClInclude Include="chat.h">
       <Filter>chat_server</Filter>
     </ClInclude>
@@ -403,9 +295,6 @@
     <ClInclude Include="resource.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="active_server.h">
-      <Filter>active_server</Filter>
-    </ClInclude>
     <ClInclude Include="effect.h">
       <Filter>Framework\DataStructs_player</Filter>
     </ClInclude>
@@ -418,17 +307,11 @@
     <ClInclude Include="contract.h">
       <Filter>Framework\contract</Filter>
     </ClInclude>
-    <ClInclude Include="ContractEnum.h">
-      <Filter>Enums</Filter>
-    </ClInclude>
     <ClInclude Include="contract_factory.h">
       <Filter>Framework\contract</Filter>
     </ClInclude>
     <ClInclude Include="bind_contract.h">
       <Filter>Framework\contract\contracts</Filter>
-    </ClInclude>
-    <ClInclude Include="passivityEnums.h">
-      <Filter>Enums</Filter>
     </ClInclude>
     <ClInclude Include="p_processor.h">
       <Filter>Framework\p_processor</Filter>
@@ -441,6 +324,39 @@
     </ClInclude>
     <ClInclude Include="enigmatic_contract.h">
       <Filter>Framework\contract\contracts</Filter>
+    </ClInclude>
+    <ClInclude Include="world_server_handler.h">
+      <Filter>world_server</Filter>
+    </ClInclude>
+    <ClInclude Include="w_node_opcodes.h">
+      <Filter>Opcodes</Filter>
+    </ClInclude>
+    <ClInclude Include="chatEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="connexionEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="ContractEnum.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="itemEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="jobEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="opcodeEnum.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="passivityEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="playerEnums.h">
+      <Filter>Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="serverEnums.h">
+      <Filter>Enums</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
